@@ -45,8 +45,9 @@ if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
 
-// API Route Registry
+// API Route Registry (mounted on /api, and also root for serverless/multi-service resilience)
 app.use("/api", apiRoutes);
+app.use("/", apiRoutes);
 
 // In production or when client build exists, serve the static frontend
 const clientDistPath = path.resolve(__dirname, "../../client/dist");
