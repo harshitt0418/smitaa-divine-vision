@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: #080B16;
+    color: #E8E3D5;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+  }
+
+  /* Accessible focus states */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 2px solid #D4AF37;
+    outline-offset: 2px;
+  }
+}
+
+@layer utilities {
+  /* Editorial gold gradient text */
+  .text-gold-gradient {
+    background: linear-gradient(135deg, #FFF0C2 0%, #D4AF37 50%, #A88120 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-celestial-gradient {
+    background: linear-gradient(135deg, #FFFFFF 0%, #E8E3D5 60%, #D4AF37 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Glassmorphic border */
+  .border-gold-subtle {
+    border-color: rgba(212, 175, 55, 0.18);
+  }
+
+  /* Luxury card backdrop */
+  .card-celestial {
+    background: linear-gradient(180deg, rgba(20, 27, 51, 0.7) 0%, rgba(14, 19, 36, 0.85) 100%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(212, 175, 55, 0.16);
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+  }
+
+  .card-celestial:hover {
+    border-color: rgba(212, 175, 55, 0.35);
+    box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.6), 0 0 20px -3px rgba(212, 175, 55, 0.15);
+  }
+
+  /* Celestial circular ring */
+  .celestial-orbit {
+    border: 1px dashed rgba(212, 175, 55, 0.2);
+    border-radius: 9999px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #080B16;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1A2342;
+  border-radius: 4px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #232E54;
+}
