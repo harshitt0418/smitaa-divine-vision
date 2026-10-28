@@ -1,6 +1,8 @@
 import { VERIFIED_REVIEWS } from "../data/testimonials";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD ? "/api" : "http://localhost:5000/api");
 
 /**
  * Fetch testimonials with graceful fallback to static verified reviews
