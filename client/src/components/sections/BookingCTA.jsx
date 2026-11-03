@@ -227,23 +227,15 @@ export default function BookingCTA({ onOpenBookingModal }) {
                     variant="primary"
                     size="md"
                     icon={Calendar}
-                    className="w-full shadow-gold-glow hover:scale-[1.02] transition-transform duration-300 text-xs sm:text-sm"
+                    className="w-full shadow-gold-glow hover:scale-[1.02] transition-transform duration-300 text-xs sm:text-sm font-bold"
                     ariaLabel={`Book appointment for ${service.name}`}
                   >
-                    Book & Schedule ({service.formattedPrice})
+                    Book & Pay ({service.formattedPrice})
                   </Button>
 
-                  <Button
-                    href={directWhatsApp}
-                    external
-                    variant="whatsapp"
-                    size="sm"
-                    icon={MessageCircle}
-                    className="w-full text-xs"
-                    ariaLabel={`Inquire about ${service.name} on WhatsApp`}
-                  >
-                    Direct WhatsApp Inquiry
-                  </Button>
+                  <div className="p-2 rounded-xl bg-midnight-950/60 border border-white/5 text-[10px] text-center text-ivory-muted">
+                    <span>Razorpay Fixed QR &bull; Redirects to WhatsApp after payment</span>
+                  </div>
                 </div>
               </div>
             );

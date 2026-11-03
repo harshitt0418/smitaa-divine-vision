@@ -184,31 +184,18 @@ export default function Header({ onOpenBookingModal }) {
               </a>
             ))}
             <div className="pt-4 flex flex-col gap-3">
-              {onOpenBookingModal && (
-                <Button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    onOpenBookingModal();
-                  }}
-                  variant="primary"
-                  size="md"
-                  icon={MessageCircle}
-                  className="w-full"
-                  ariaLabel="Book Consultation Appointment"
-                >
-                  Book Appointment (Mon–Fri)
-                </Button>
-              )}
               <Button
-                href={generalWhatsAppBooking}
-                external
-                variant="whatsapp"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  if (onOpenBookingModal) onOpenBookingModal();
+                }}
+                variant="primary"
                 size="md"
                 icon={MessageCircle}
-                className="w-full"
-                ariaLabel="Book a Session on WhatsApp"
+                className="w-full shadow-gold-glow"
+                ariaLabel="Book Consultation Appointment"
               >
-                Book a Session (WhatsApp)
+                Book & Schedule Session
               </Button>
             </div>
           </nav>

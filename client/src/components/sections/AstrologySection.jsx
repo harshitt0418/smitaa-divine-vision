@@ -139,26 +139,15 @@ export default function AstrologySection({ onOpenBookingModal }) {
                   variant="primary"
                   size="lg"
                   icon={Calendar}
-                  className="w-full shadow-gold-glow hover:scale-[1.02] transition-transform"
+                  className="w-full shadow-gold-glow hover:scale-[1.02] transition-transform font-bold"
                   ariaLabel="Book Astrology Consultation appointment"
                 >
                   Book Astrology Session (₹2,100)
                 </Button>
-
-                <Button
-                  href={service.whatsAppLink}
-                  external
-                  variant="whatsapp"
-                  size="sm"
-                  icon={MessageCircle}
-                  className="w-full text-xs"
-                  ariaLabel="Inquire about Astrology Consultation via WhatsApp"
-                >
-                  Inquire on WhatsApp
-                </Button>
-                <p className="text-[11px] text-center text-ivory-muted">
-                  Schedule an appointment Mon–Fri (1:00 PM – 5:00 PM) before payment
-                </p>
+                <div className="p-2.5 rounded-xl bg-midnight-950/70 border border-white/5 text-[11px] text-center text-ivory-muted space-y-0.5">
+                  <p className="text-gold-300 font-medium">Fixed Fee: ₹2,100 &bull; Mon–Fri, 1:00 PM – 5:00 PM</p>
+                  <p className="text-[10px]">Payment via Razorpay Fixed QR &bull; Redirects to WhatsApp upon verification</p>
+                </div>
               </div>
             </div>
           </div>

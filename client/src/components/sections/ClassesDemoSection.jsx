@@ -183,30 +183,22 @@ export default function ClassesDemoSection({ onOpenClassPurchaseModal }) {
                       </div>
                     </div>
 
-                    {/* Action Buttons: Razorpay Checkout & WhatsApp Inquiry */}
+                    {/* Action Button: Razorpay Checkout (Redirects to WhatsApp only after payment) */}
                     <div className="pt-2 border-t border-white/10 space-y-2">
                       <Button
                         onClick={() => handleEnrollClick(cls.id)}
                         variant="primary"
                         size="md"
                         icon={CreditCard}
-                        className="w-full shadow-gold-glow hover:scale-[1.02] transition-transform duration-300 text-xs sm:text-sm font-semibold"
+                        className="w-full shadow-gold-glow hover:scale-[1.02] transition-transform duration-300 text-xs sm:text-sm font-bold"
                         ariaLabel={`Enroll in ${cls.name} for ${cls.formattedPrice}`}
                       >
                         Enroll Now ({cls.formattedPrice})
                       </Button>
 
-                      <Button
-                        href={classWhatsAppLink}
-                        external
-                        variant="whatsapp"
-                        size="sm"
-                        icon={MessageCircle}
-                        className="w-full text-xs"
-                        ariaLabel={`Inquire about ${cls.name} on WhatsApp`}
-                      >
-                        Inquire on WhatsApp
-                      </Button>
+                      <div className="p-2 rounded-xl bg-midnight-950/60 border border-white/5 text-[10px] text-center text-ivory-muted">
+                        <span>Razorpay Fixed QR &bull; Redirects to WhatsApp after payment</span>
+                      </div>
                     </div>
                   </div>
                 );
@@ -321,18 +313,14 @@ export default function ClassesDemoSection({ onOpenClassPurchaseModal }) {
                     </Button>
 
                     <Button
-                      href={getWhatsAppLink(
-                        demo.whatsAppMessage ||
-                          `Hello Smita Singh, I watched ${demo.title} on Google Drive and would like to enroll in your class.`
-                      )}
-                      external
-                      variant="whatsapp"
+                      onClick={() => handleEnrollClick("recorded-class-numerology")}
+                      variant="secondary"
                       size="sm"
-                      icon={MessageCircle}
+                      icon={GraduationCap}
                       className="w-full text-xs"
-                      ariaLabel={`Inquire about classes after watching ${demo.title}`}
+                      ariaLabel={`Enroll in class after watching ${demo.title}`}
                     >
-                      {demo.badgeType === "Review" ? "Inquire About Classes (WhatsApp)" : "Book Class After Demo"}
+                      Enroll in Masterclass (Razorpay Fixed QR)
                     </Button>
                   </div>
                 </div>
@@ -377,20 +365,19 @@ export default function ClassesDemoSection({ onOpenClassPurchaseModal }) {
           </div>
 
           <p className="text-xs sm:text-sm text-ivory-muted max-w-2xl mx-auto leading-relaxed">
-            Choose any recorded class above to enroll directly via Razorpay, or reach out to Smita Singh on WhatsApp for syllabus details.
+            Select any recorded masterclass above to pay securely via Razorpay with a fixed-amount QR code. Redirects to WhatsApp automatically once your payment is verified.
           </p>
 
           <div className="pt-2 flex flex-wrap justify-center gap-4">
             <Button
-              href={generalClassInquiry}
-              external
-              variant="whatsapp"
+              onClick={() => handleEnrollClick("recorded-class-numerology")}
+              variant="primary"
               size="lg"
-              icon={MessageCircle}
-              className="shadow-gold-glow hover:scale-105 transition-all duration-300"
-              ariaLabel="Inquire about classes via WhatsApp"
+              icon={CreditCard}
+              className="shadow-gold-glow hover:scale-105 transition-all duration-300 font-bold"
+              ariaLabel="Enroll in recorded classes"
             >
-              Inquire on WhatsApp
+              Enroll in a Recorded Masterclass
             </Button>
             <Button
               href="https://drive.google.com/file/d/1UYztXf94v3i5Iqs0L3YM2t0bkYCN35wD/view?usp=drivesdk"

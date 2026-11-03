@@ -13,6 +13,7 @@ import {
   Phone,
   Mail,
   ExternalLink,
+  QrCode,
 } from "lucide-react";
 import Modal from "../ui/Modal";
 import Button from "../ui/Button";
@@ -46,6 +47,7 @@ export default function ClassPurchaseModal({ isOpen, onClose, initialClassId }) 
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [fallbackMode, setFallbackMode] = useState(null);
+  const [manualPaymentId, setManualPaymentId] = useState("");
   const [verifiedData, setVerifiedData] = useState(null);
 
   React.useEffect(() => {
@@ -61,6 +63,7 @@ export default function ClassPurchaseModal({ isOpen, onClose, initialClassId }) 
     setStep(1);
     setErrorMessage("");
     setFallbackMode(null);
+    setManualPaymentId("");
     setVerifiedData(null);
     onClose();
   };
@@ -109,10 +112,10 @@ export default function ClassPurchaseModal({ isOpen, onClose, initialClassId }) 
 
       const options = {
         key: orderData.keyId,
-        amount: orderData.amount,
+        amount: orderData.amount, // Exact fixed amount in paise
         currency: orderData.currency || "INR",
         name: "Smitaa Divine Vision",
-        description: `Online Recorded Class: ${selectedClass.name}`,
+        description: `Online Recorded Class: ${selectedClass.name} — Fixed Amount: ${selectedClass.formattedPrice}`,
         image: "/assets/official-logo-dv.jpg",
         order_id: orderData.orderId,
         prefill: {
@@ -123,7 +126,38 @@ export default function ClassPurchaseModal({ isOpen, onClose, initialClassId }) 
         theme: {
           color: "#D4AF37",
         },
+        config: {
+          display: {
+            blocks: {
+              upi: {
+                name: "Pay with Fixed Amount UPI QR Code",
+                instruments: [
+                  {
+                    method: "upi",
+                    flows: ["qr", "intent", "collect"],
+                  },
+                ],
+              },
+              other: {
+                name: "Cards & Netbanking",
+                instruments: [
+                  {
+                    method: "card",
+                  },
+                  {
+                    method: "netbanking",
+                  },
+                ],
+              },
+            },
+            sequence: ["block.upi", "block.other"],
+            preferences: {
+              show_default_blocks: true,
+            },
+          },
+        },
         modal: {
+          confirm_close: true,
           ondismiss: () => {
             setIsProcessing(false);
           },
@@ -164,6 +198,34 @@ export default function ClassPurchaseModal({ isOpen, onClose, initialClassId }) 
     } catch (err) {
       console.error("Payment flow error:", err);
       setErrorMessage(err.message || "Failed to initiate payment.");
+      setIsProcessing(false);
+    }
+  };
+
+  const handleVerifyManualPayment = async () => {
+    if (!manualPaymentId.trim()) {
+      setErrorMessage("Please enter your Razorpay Payment ID (e.g. pay_XXXXX) to verify.");
+      return;
+    }
+
+    setIsProcessing(true);
+    setErrorMessage("");
+
+    try {
+      const verifyResult = await verifyPayment({
+        razorpay_payment_id: manualPaymentId.trim(),
+        bookingReference: fallbackMode?.bookingReference,
+      });
+
+      if (verifyResult.verified && verifyResult.success) {
+        setVerifiedData(verifyResult);
+        setStep(3);
+      } else {
+        setErrorMessage("Payment verification could not be confirmed. Please check the Payment ID.");
+      }
+    } catch (err) {
+      setErrorMessage(err.message || "Payment verification failed. Please ensure the payment is captured.");
+    } finally {
       setIsProcessing(false);
     }
   };
@@ -341,7 +403,7 @@ export default function ClassPurchaseModal({ isOpen, onClose, initialClassId }) 
 
               <div className="pt-3 border-t border-white/10 flex justify-between items-baseline">
                 <span className="font-cinzel text-xs uppercase tracking-wider text-ivory-muted">
-                  Total Course Fee:
+                  Total Fixed Fee:
                 </span>
                 <span className="font-cinzel text-2xl font-bold text-gold-400">
                   {selectedClass.formattedPrice}
@@ -350,45 +412,67 @@ export default function ClassPurchaseModal({ isOpen, onClose, initialClassId }) 
             </div>
           </div>
 
+          {/* Prominent Fixed-Amount QR Callout */}
+          <div className="p-3.5 rounded-xl bg-gold-500/10 border border-gold-500/35 space-y-1.5 text-xs text-gold-300">
+            <div className="flex items-center gap-2 font-semibold text-gold-200">
+              <QrCode className="w-4 h-4 text-gold-400 shrink-0" />
+              <span>Razorpay Fixed-Amount UPI QR Code: {selectedClass.formattedPrice}</span>
+            </div>
+            <p className="text-[11px] text-ivory-soft leading-relaxed">
+              Razorpay will display a dynamic UPI QR code with the exact fee of <strong>{selectedClass.formattedPrice}</strong>. You will be redirected to WhatsApp to receive your Google Drive access <strong>only after payment is verified</strong>.
+            </p>
+          </div>
+
           {fallbackMode && (
             <div className="p-4 rounded-xl bg-gold-500/10 border border-gold-500/40 text-xs space-y-3">
               <div className="flex items-start gap-2">
                 <AlertCircle className="w-4 h-4 text-gold-400 shrink-0 mt-0.5" />
                 <div>
                   <span className="font-semibold text-gold-200 block">
-                    Razorpay Gateway Setup Notice
+                    Razorpay Gateway Link
                   </span>
                   <p className="text-ivory-muted text-[11px] mt-0.5">
                     Your enrollment reference ID is:{" "}
                     <strong className="text-gold-300 font-mono">{fallbackMode.bookingReference}</strong>.
-                    You can complete your payment via our official Razorpay link below:
+                    Complete payment of <strong>{selectedClass.formattedPrice}</strong> on Razorpay, then enter your Payment ID below to verify and unlock WhatsApp confirmation.
                   </p>
                 </div>
               </div>
 
-              <div className="pt-1 flex flex-col sm:flex-row gap-2">
+              <div className="pt-1 space-y-2">
                 <Button
                   href={`${fallbackMode.paymentLink}`}
                   external
                   variant="primary"
                   size="sm"
                   icon={ExternalLink}
-                  className="w-full sm:w-auto text-xs"
+                  className="w-full text-xs font-bold"
                 >
-                  Pay {selectedClass.formattedPrice} on Razorpay
+                  Pay Fixed {selectedClass.formattedPrice} on Razorpay
                 </Button>
-                <Button
-                  href={`https://wa.me/919119860551?text=${encodeURIComponent(
-                    `Namaste Smita Singh,\nI am enrolling in the recorded class: ${selectedClass.name} (${selectedClass.formattedPrice}).\nReference ID: ${fallbackMode.bookingReference}\nName: ${clientName}\nEmail: ${clientEmail}`
-                  )}`}
-                  external
-                  variant="whatsapp"
-                  size="sm"
-                  icon={MessageCircle}
-                  className="w-full sm:w-auto text-xs"
-                >
-                  Confirm on WhatsApp
-                </Button>
+
+                <div className="flex gap-2 items-center pt-2">
+                  <input
+                    type="text"
+                    value={manualPaymentId}
+                    onChange={(e) => setManualPaymentId(e.target.value)}
+                    placeholder="Enter Razorpay Payment ID (e.g. pay_XXXXX)"
+                    className="flex-1 px-3 py-2 rounded-xl bg-midnight-950 border border-white/15 focus:border-gold-500 text-ivory text-xs font-mono placeholder:text-ivory-muted/40"
+                  />
+                  <Button
+                    type="button"
+                    onClick={handleVerifyManualPayment}
+                    variant="secondary"
+                    size="sm"
+                    disabled={isProcessing}
+                    className="shrink-0 text-xs font-semibold"
+                  >
+                    {isProcessing ? "Verifying..." : "Verify & Unlock"}
+                  </Button>
+                </div>
+                <p className="text-[10px] text-ivory-muted text-center italic">
+                  WhatsApp redirection unlocks strictly after payment verification.
+                </p>
               </div>
             </div>
           )}
@@ -414,11 +498,11 @@ export default function ClassPurchaseModal({ isOpen, onClose, initialClassId }) 
               onClick={handleProceedToPayment}
               variant="primary"
               size="md"
-              icon={CreditCard}
+              icon={QrCode}
               disabled={isProcessing}
-              className="shadow-gold-glow"
+              className="shadow-gold-glow font-bold"
             >
-              {isProcessing ? "Processing..." : `Pay ${selectedClass.formattedPrice} via Razorpay`}
+              {isProcessing ? "Processing..." : `Pay ${selectedClass.formattedPrice} via Razorpay QR`}
             </Button>
           </div>
         </div>
@@ -472,7 +556,7 @@ export default function ClassPurchaseModal({ isOpen, onClose, initialClassId }) 
 
           <div className="space-y-3 pt-2">
             <p className="text-xs text-ivory-muted max-w-sm mx-auto">
-              Click below to send your prefilled enrollment verification to Smita Singh on WhatsApp and unlock your Google Drive access:
+              Your payment is verified. Click below to send your prefilled enrollment verification to Smita Singh on WhatsApp and unlock your Google Drive access:
             </p>
 
             <Button

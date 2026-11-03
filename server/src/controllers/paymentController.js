@@ -213,8 +213,8 @@ export async function createOrder(req, res) {
 }
 
 /**
- * Verify Razorpay payment signature
- * Only after cryptographic verification is successful, generate the verified WhatsApp redirection
+ * Verify Razorpay payment signature or captured payment
+ * Only after verification is successful, generate the verified WhatsApp redirection
  */
 export async function verifyPayment(req, res) {
   try {
@@ -225,15 +225,17 @@ export async function verifyPayment(req, res) {
       bookingReference,
     } = req.body;
 
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+    if (!razorpay_payment_id) {
       return res.status(400).json({
         success: false,
         verified: false,
-        error: "Missing required payment parameters (order id, payment id, or signature).",
+        error: "Missing required payment ID parameter.",
       });
     }
 
+    const keyId = process.env.RAZORPAY_KEY_ID;
     const keySecret = process.env.RAZORPAY_KEY_SECRET;
+
     if (!keySecret) {
       return res.status(500).json({
         success: false,
@@ -242,27 +244,61 @@ export async function verifyPayment(req, res) {
       });
     }
 
-    // Cryptographic HMAC SHA-256 Signature Verification
-    const expectedSignature = crypto
-      .createHmac("sha256", keySecret)
-      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-      .digest("hex");
+    let isVerified = false;
 
-    const isMatch =
-      expectedSignature.length === razorpay_signature.length &&
-      crypto.timingSafeEqual(
-        Buffer.from(expectedSignature),
-        Buffer.from(razorpay_signature)
-      );
+    // Method 1: Cryptographic HMAC SHA-256 Signature Verification from Razorpay Checkout
+    if (razorpay_order_id && razorpay_signature) {
+      const expectedSignature = crypto
+        .createHmac("sha256", keySecret)
+        .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+        .digest("hex");
 
-    if (!isMatch) {
-      console.warn(
-        `[Payment Verification Failed] Mismatch for order ${razorpay_order_id} and payment ${razorpay_payment_id}`
-      );
+      const isMatch =
+        expectedSignature.length === razorpay_signature.length &&
+        crypto.timingSafeEqual(
+          Buffer.from(expectedSignature),
+          Buffer.from(razorpay_signature)
+        );
+
+      if (!isMatch) {
+        console.warn(
+          `[Payment Verification Failed] Mismatch for order ${razorpay_order_id} and payment ${razorpay_payment_id}`
+        );
+        return res.status(400).json({
+          success: false,
+          verified: false,
+          error: "Payment verification failed. Cryptographic signature does not match.",
+        });
+      }
+      isVerified = true;
+    } else if (keyId && keySecret) {
+      // Method 2: Direct API fetch verification for payments made via Razorpay Link
+      try {
+        const razorpay = new Razorpay({ key_id: keyId, key_secret: keySecret });
+        const payment = await razorpay.payments.fetch(razorpay_payment_id);
+        if (payment && (payment.status === "captured" || payment.status === "authorized")) {
+          isVerified = true;
+        } else {
+          return res.status(400).json({
+            success: false,
+            verified: false,
+            error: `Payment is currently in '${payment?.status}' state and not yet captured.`,
+          });
+        }
+      } catch (fetchErr) {
+        return res.status(400).json({
+          success: false,
+          verified: false,
+          error: `Could not verify payment ID '${razorpay_payment_id}' with Razorpay: ${fetchErr.message}`,
+        });
+      }
+    }
+
+    if (!isVerified) {
       return res.status(400).json({
         success: false,
         verified: false,
-        error: "Payment verification failed. Cryptographic signature does not match.",
+        error: "Payment could not be verified. Please complete payment before continuing.",
       });
     }
 
@@ -293,15 +329,15 @@ export async function verifyPayment(req, res) {
     if (booking && booking.save) {
       booking.status = "PAID";
       booking.razorpayPaymentId = razorpay_payment_id;
-      booking.razorpaySignature = razorpay_signature;
+      if (razorpay_signature) booking.razorpaySignature = razorpay_signature;
       booking.paidAt = paidAt;
       await booking.save();
     } else if (booking) {
       booking.status = "PAID";
       booking.razorpayPaymentId = razorpay_payment_id;
-      booking.razorpaySignature = razorpay_signature;
+      if (razorpay_signature) booking.razorpaySignature = razorpay_signature;
       booking.paidAt = paidAt;
-      memoryBookings.set(razorpay_order_id, booking);
+      if (razorpay_order_id) memoryBookings.set(razorpay_order_id, booking);
       if (booking.reference) memoryBookings.set(booking.reference, booking);
     }
 
@@ -310,7 +346,7 @@ export async function verifyPayment(req, res) {
     const amount = booking ? booking.amount : "";
     const appointmentDate = booking ? booking.appointmentDate : null;
     const appointmentTime = booking ? booking.appointmentTime : null;
-    const refCode = booking ? booking.reference : bookingReference || razorpay_order_id;
+    const refCode = booking ? booking.reference : bookingReference || razorpay_order_id || razorpay_payment_id;
     const serviceType = booking ? booking.serviceType : "consultation";
 
     // Build prefilled WhatsApp message
@@ -348,7 +384,7 @@ export async function verifyPayment(req, res) {
       verified: true,
       message: "Payment successfully verified.",
       paymentId: razorpay_payment_id,
-      orderId: razorpay_order_id,
+      orderId: razorpay_order_id || null,
       bookingReference: refCode,
       booking: {
         clientName,
