@@ -219,6 +219,7 @@ export default function BookingCTA() {
                   <option value="Astrology">Vedic Astrology</option>
                   <option value="Numerology">Numerology Analysis</option>
                   <option value="Vastu">Vastu Space Alignment</option>
+                  <option value="Classes">Numerology Masterclasses & Training</option>
                   <option value="Multiple">Comprehensive Consultation</option>
                 </select>
               </div>

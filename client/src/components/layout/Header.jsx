@@ -21,7 +21,7 @@ export default function Header({ onOpenBookingModal }) {
     { label: "Astrology", href: "#astrology" },
     { label: "Numerology", href: "#numerology" },
     { label: "Core Numbers", href: "#calculator" },
-    { label: "Classes Demo", href: "#classes" },
+    { label: "Classes & Demos", href: "#classes" },
     { label: "Vastu", href: "#vastu" },
     { label: "The Book", href: "#book" },
     { label: "Reviews", href: "#reviews" },

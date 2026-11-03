@@ -128,6 +128,59 @@ export const SITE_CONFIG = {
       duration: "Q&A Session",
       topics: ["Personal Year Trends", "Compatibility Nuances", "Client Guidance Practice"]
     }
+  ],
+  classPrograms: [
+    {
+      id: "foundational-numerology",
+      level: "Level 1",
+      badge: "Foundational Certification",
+      title: "Foundational Numerology Certification",
+      subtitle: "Core Numerical Archetypes & Birth Chart Grids",
+      duration: "4 Weeks • Live Weekend Batches",
+      format: "Live Interactive Zoom + Drive Recordings + Study Notes",
+      highlights: [
+        "Calculation & interpretation of Mulank (Birth) and Bhagyank (Destiny)",
+        "Single-digit cosmic vibrations (1-9) & planetary rulerships",
+        "Vedic & Lo Shu Grid placements and missing number analysis",
+        "Master Numbers (11, 22, 33) and Karmic Debt indicators",
+        "Official Certificate of Completion & Student Workbook"
+      ],
+      whatsAppMessage: "Hello Smita Singh, I would like to book my seat for the Foundational Numerology Certification (Level 1) class. Please share the upcoming batch schedule, fee structure, and enrollment details."
+    },
+    {
+      id: "professional-masterclass",
+      level: "Level 2",
+      badge: "Professional Practitioner",
+      title: "Professional Masterclass & Name Tuning",
+      subtitle: "Acoustic Tuning, Business Names & Forecasting",
+      duration: "6 Weeks • Advanced Cohort",
+      format: "Small Cohort + Case Studies + Lifetime Community",
+      highlights: [
+        "In-depth Chaldean & Pythagorean letter frequency mechanics",
+        "Personal name correction, signature acoustics & corporate brand tuning",
+        "Annual and monthly Personal Year cycles (Varshik Ank) for career timing",
+        "Relationship synastry, partnership compatibility & client counseling ethics",
+        "Professional Numerology Practitioner Certification"
+      ],
+      whatsAppMessage: "Hello Smita Singh, I would like to book my seat for the Professional Numerology Masterclass & Name Tuning course. Please share upcoming batch dates, curriculum, and fee structure."
+    },
+    {
+      id: "private-mentorship",
+      level: "Executive / Intensive",
+      badge: "1-on-1 Mentorship",
+      title: "1-on-1 Personalized Mentorship",
+      subtitle: "Direct Private Guidance & Advanced Practice",
+      duration: "Flexible • Custom Paced",
+      format: "Direct 1-on-1 Sessions with Smita Singh + WhatsApp Guidance",
+      highlights: [
+        "Customized curriculum aligned with your personal and consulting goals",
+        "Deep analysis of your personal chart and live client consultation guidance",
+        "Advanced remedial numerology (gemstones, colors, yantras, lifestyle)",
+        "Practical consulting frameworks for life coaches and practitioners",
+        "Direct ongoing mentorship and personal case study reviews"
+      ],
+      whatsAppMessage: "Hello Smita Singh, I am interested in booking the 1-on-1 Personalized Numerology Mentorship with you. Please share availability, curriculum structure, and enrollment process."
+    }
   ]
 };
 
