@@ -302,21 +302,22 @@ export default function ClassesDemoSection() {
                       className="w-full text-xs shadow-gold-glow"
                       ariaLabel={`Watch ${demo.title} on Google Drive (opens in a new tab)`}
                     >
-                      Watch Demo on Drive
+                      {demo.ctaText || "Watch Demo on Drive"}
                     </Button>
 
                     <Button
                       href={getWhatsAppLink(
-                        `Hello Smita Singh, I watched ${demo.title} on Google Drive and would like to book my seat for the upcoming class cohort.`
+                        demo.whatsAppMessage ||
+                          `Hello Smita Singh, I watched ${demo.title} on Google Drive and would like to book my seat for the upcoming class cohort.`
                       )}
                       external
                       variant="whatsapp"
                       size="sm"
                       icon={MessageCircle}
                       className="w-full text-xs"
-                      ariaLabel={`Book classes after watching ${demo.title}`}
+                      ariaLabel={`Inquire about classes after watching ${demo.title}`}
                     >
-                      Book Class After Demo
+                      {demo.badgeType === "Review" ? "Inquire About Classes (WhatsApp)" : "Book Class After Demo"}
                     </Button>
                   </div>
                 </div>

@@ -99,34 +99,43 @@ export const SITE_CONFIG = {
   },
   classDemos: [
     {
-      id: "demo-part-1",
-      part: "Part 1",
-      title: "Numerology Class Demo — Part 1",
-      subtitle: "Foundational Vibrations & Life Path Principles",
-      description: "An introductory masterclass lecture introducing Mulank (Birth Number), core single-digit resonances, and how numerical archetypes manifest in daily decision-making.",
+      id: "demo-profession-challenges",
+      part: "Demo Lecture 01",
+      badgeType: "Lecture",
+      title: "Professions & Their Career Challenges",
+      subtitle: "Career Alignment & Overcoming Vocational Obstacles",
+      description: "A focused masterclass session exploring how planetary numbers govern career directions, the specific vocational challenges individuals face according to their numbers, and strategic remedial alignments for professional breakthroughs.",
       driveUrl: "https://drive.google.com/file/d/1UYztXf94v3i5Iqs0L3YM2t0bkYCN35wD/view?usp=drivesdk",
-      duration: "Video Lecture",
-      topics: ["Mulank vs Bhagyank", "Planetary Archetypes", "Numerical Cycles"]
+      duration: "Masterclass Lecture",
+      topics: ["Vocational Challenges", "Career Number Alignment", "Professional Timing", "Remedial Strategies"],
+      ctaText: "Watch Career Demo on Drive",
+      whatsAppMessage: "Hello Smita Singh, I watched your demo lecture on 'Professions & Their Career Challenges' on Google Drive and would like to book my seat for the upcoming masterclass batch."
     },
     {
-      id: "demo-part-2",
-      part: "Part 2",
-      title: "Numerology Class Demo — Part 2",
-      subtitle: "Name Number Decoding & Vibrational Balance",
-      description: "Detailed walkthrough of Namank calculation, examining how name spelling acoustics interplay with destiny numbers to support career and interpersonal goals.",
+      id: "demo-2-rajyogas",
+      part: "Demo Lecture 02",
+      badgeType: "Lecture",
+      title: "The 2 Sacred Rajyogas in Birth Chart",
+      subtitle: "Auspicious Combinations for Leadership & Prosperity",
+      description: "An illuminating deep-dive into the two powerful Rajyogas formed in birth charts and numerological grids. Learn how these auspicious celestial alignments confer authority, financial abundance, and growth when properly activated.",
       driveUrl: "https://drive.google.com/file/d/1KXtMUQ3ym4i5aSJI2BxU_dHweiXfr3Zt/view?usp=drivesdk",
-      duration: "Practical Analysis",
-      topics: ["Chaldean Name Tables", "Vowel vs Consonant Analysis", "Professional Timing"]
+      duration: "Deep-Dive Lecture",
+      topics: ["2 Major Rajyogas", "Chart & Grid Yogas", "Leadership & Abundance", "Activating Yogas"],
+      ctaText: "Watch Rajyoga Demo on Drive",
+      whatsAppMessage: "Hello Smita Singh, I watched your demo lecture on 'The 2 Sacred Rajyogas in Birth Chart' on Google Drive and would like to enroll in your upcoming Numerology masterclass."
     },
     {
-      id: "demo-part-3",
-      part: "Part 3",
-      title: "Numerology Class Demo — Part 3",
-      subtitle: "Interactive Student Q&A & Practical Case Studies",
-      description: "A live workshop recording addressing common questions on personal year forecasting (Varshik Ank), date compatibility, and ethical client counseling.",
+      id: "demo-student-feedback",
+      part: "Student Feedback",
+      badgeType: "Review",
+      title: "Verified Student Feedback & Learning Experience",
+      subtitle: "Authentic Video Review of Smita Singh's Mentorship",
+      description: "Genuine recorded feedback from an enrolled student sharing their firsthand learning journey with Smita Singh—highlighting her clear, practical teaching methodology, interactive Q&A support, and transformative insights.",
       driveUrl: "https://drive.google.com/file/d/1GhAYSN68Dm6_UxXnaz-xV64ccXF4rZWL/view?usp=drivesdk",
-      duration: "Q&A Session",
-      topics: ["Personal Year Trends", "Compatibility Nuances", "Client Guidance Practice"]
+      duration: "Student Video Review",
+      topics: ["Real Student Review", "Teaching Methodology", "Practical Case Studies", "Mentorship Impact"],
+      ctaText: "Watch Student Feedback on Drive",
+      whatsAppMessage: "Hello Smita Singh, I watched the student feedback video from your Numerology class on Google Drive and would like to inquire about enrolling in your upcoming batch."
     }
   ],
   classPrograms: [
