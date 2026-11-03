@@ -52,7 +52,7 @@ export default function BookingCTA() {
   };
 
   return (
-    <section id="book-session" className="py-20 sm:py-28 relative overflow-hidden border-t border-white/5">
+    <section id="book-session" className="py-20 sm:py-28 relative overflow-hidden border-t border-white/5 reveal-on-scroll">
       {/* Background celestial glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold-500/10 rounded-full blur-[140px] pointer-events-none" />
 

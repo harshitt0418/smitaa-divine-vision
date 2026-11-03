@@ -37,7 +37,7 @@ export default function NumerologySection() {
   };
 
   return (
-    <section id="numerology" className="py-20 sm:py-28 relative overflow-hidden bg-midnight-950/60 border-t border-white/5">
+    <section id="numerology" className="py-20 sm:py-28 relative overflow-hidden bg-midnight-950/60 border-t border-white/5 reveal-on-scroll">
       {/* Subtle blue/indigo ambient glow */}
       <div className="absolute top-1/2 -left-40 w-96 h-96 bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none" />
 
@@ -189,7 +189,7 @@ export default function NumerologySection() {
               Ready to Calculate Your Own Numbers?
             </h4>
             <p className="text-xs text-ivory-muted">
-              Use our transparent calculator below for Mulank, Bhagyank, and Namank reduction.
+              Discover your Mulank, Bhagyank, and Namank archetypal resonance below.
             </p>
           </div>
           <div className="flex items-center gap-3 shrink-0">

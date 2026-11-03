@@ -9,7 +9,7 @@ export default function AstrologySection() {
   if (!service) return null;
 
   return (
-    <section id="astrology" className="py-20 sm:py-28 relative overflow-hidden border-t border-white/5">
+    <section id="astrology" className="py-20 sm:py-28 relative overflow-hidden border-t border-white/5 reveal-on-scroll">
       {/* Background ambient gradient */}
       <div className="absolute top-1/2 -right-40 w-96 h-96 bg-amber-500/5 rounded-full blur-[100px] pointer-events-none" />
 

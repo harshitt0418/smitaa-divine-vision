@@ -32,7 +32,7 @@ export default function ReviewsSection({ backendReviews = [] }) {
         });
 
   return (
-    <section id="reviews" className="py-20 sm:py-28 relative overflow-hidden bg-midnight-950/60 border-t border-white/5">
+    <section id="reviews" className="py-20 sm:py-28 relative overflow-hidden bg-midnight-950/60 border-t border-white/5 reveal-on-scroll">
       {/* Background ambient lighting */}
       <div className="absolute top-1/3 -left-40 w-96 h-96 bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none" />
 

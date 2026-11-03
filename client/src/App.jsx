@@ -40,6 +40,32 @@ export default function App() {
     };
   }, []);
 
+  // Graceful scroll-reveal animation observer
+  useEffect(() => {
+    const handleScrollReveal = () => {
+      const targets = document.querySelectorAll(".reveal-on-scroll:not(.is-revealed)");
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-revealed");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+      );
+      targets.forEach((t) => observer.observe(t));
+      return observer;
+    };
+
+    const timer = setTimeout(() => {
+      handleScrollReveal();
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="relative min-h-screen text-ivory flex flex-col bg-midnight-950 font-sans selection:bg-gold-500/30 selection:text-ivory-light">
       {/* Restrained subtle celestial canvas background */}

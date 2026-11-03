@@ -50,28 +50,38 @@ export default function Header({ onOpenBookingModal }) {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Top-Centre Centered Official Logo Layout */}
+        {/* Main Header Bar: Top-Left Logo & Brand | Top-Centre Prominent Emblem | Right Action CTA */}
         <div className="relative flex items-center justify-between gap-3 min-h-[54px] sm:min-h-[64px] lg:min-h-[78px]">
           
-          {/* Left: Brand Identity Typography */}
-          <div className="flex items-center min-w-0 max-w-[130px] xs:max-w-[160px] sm:max-w-none z-10">
+          {/* Top-Left Corner: Official Logo + Brand Identity */}
+          <div className="flex items-center min-w-0 z-10">
             <a
               href="#home"
               onClick={(e) => handleNavLinkClick(e, "#home")}
-              className="group flex flex-col text-left focus:outline-none"
+              className="group flex items-center gap-2.5 sm:gap-3 text-left focus:outline-none"
               aria-label="Return to Smitaa Divine Vision homepage"
             >
-              <span className="font-cinzel font-bold text-xs sm:text-base lg:text-lg tracking-wide text-ivory-light group-hover:text-gold-300 transition-colors truncate">
-                {SITE_CONFIG.brandName}
-              </span>
-              <span className="text-[8px] sm:text-[10px] lg:text-[11px] text-gold-400/90 tracking-widest uppercase font-medium truncate">
-                {SITE_CONFIG.practitionerName} &bull; {SITE_CONFIG.alternateBrandName}
-              </span>
+              {/* Official Logo at Top-Left Corner */}
+              <div className="relative w-9 h-9 sm:w-11 sm:h-11 rounded-full border border-gold-500/40 bg-black flex items-center justify-center overflow-hidden shrink-0 shadow-[0_0_12px_rgba(212,175,55,0.2)] group-hover:border-gold-400 group-hover:scale-105 transition-all duration-300">
+                <img
+                  src={SITE_CONFIG.officialLogo}
+                  alt="Smitaa Divine Vision official logo"
+                  className="w-full h-full object-contain filter drop-shadow-[0_0_6px_rgba(212,175,55,0.25)] group-hover:brightness-110 transition-all duration-300"
+                />
+              </div>
+              <div className="flex flex-col min-w-0">
+                <span className="font-cinzel font-bold text-xs sm:text-base lg:text-lg tracking-wide text-ivory-light group-hover:text-gold-300 transition-colors truncate">
+                  {SITE_CONFIG.brandName}
+                </span>
+                <span className="text-[8px] sm:text-[10px] lg:text-[11px] text-gold-400/90 tracking-widest uppercase font-medium truncate">
+                  {SITE_CONFIG.practitionerName} &bull; {SITE_CONFIG.alternateBrandName}
+                </span>
+              </div>
             </a>
           </div>
 
-          {/* Center: Official Logo (Positioned Centrally at the Top) */}
-          <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center pointer-events-auto">
+          {/* Top-Centre: Prominent Official Emblem with Celestial Ambient Pulse */}
+          <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-20 hidden sm:flex items-center justify-center pointer-events-auto">
             <a
               href="#home"
               onClick={(e) => handleNavLinkClick(e, "#home")}
@@ -79,7 +89,7 @@ export default function Header({ onOpenBookingModal }) {
               aria-label="Return to Smitaa Divine Vision homepage"
             >
               <div
-                className={`relative rounded-full border border-gold-500/35 bg-black flex items-center justify-center overflow-hidden transition-all duration-300 shadow-[0_0_15px_rgba(212,175,55,0.2)] group-hover:border-gold-400 group-hover:shadow-[0_0_25px_rgba(212,175,55,0.35)] ${
+                className={`relative rounded-full border border-gold-500/35 bg-black flex items-center justify-center overflow-hidden transition-all duration-300 shadow-[0_0_15px_rgba(212,175,55,0.2)] group-hover:border-gold-400 group-hover:shadow-[0_0_25px_rgba(212,175,55,0.35)] animate-pulse-glow ${
                   isScrolled
                     ? "w-[48px] h-[48px] sm:w-[58px] sm:h-[58px] lg:w-[68px] lg:h-[68px]"
                     : "w-[52px] h-[52px] sm:w-[64px] sm:h-[64px] lg:w-[78px] lg:h-[78px]"
@@ -104,6 +114,7 @@ export default function Header({ onOpenBookingModal }) {
                 size="sm"
                 icon={MessageCircle}
                 ariaLabel="Book a consultation session via WhatsApp"
+                className="hover:scale-105 transition-transform duration-300 shadow-gold-glow"
               >
                 Book a Session
               </Button>
@@ -132,7 +143,7 @@ export default function Header({ onOpenBookingModal }) {
               key={link.label}
               href={link.href}
               onClick={(e) => handleNavLinkClick(e, link.href)}
-              className="text-xs uppercase tracking-wider text-ivory-soft hover:text-gold-300 transition-colors py-1 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-gold-500 hover:after:w-full after:transition-all after:duration-300"
+              className="text-xs uppercase tracking-wider text-ivory-soft hover:text-gold-300 transition-all duration-300 py-1 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-gold-500 hover:after:w-full after:transition-all after:duration-300 hover:-translate-y-0.5"
             >
               {link.label}
             </a>

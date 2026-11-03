@@ -10,7 +10,7 @@ export const SITE_CONFIG = {
   phoneNumberDisplay: "+91 91198 60551",
   whatsappNumber: "919119860551", // E.164 formatted for wa.me
   email: "contact@smitaadivinevision.com",
-  brandEmblem: "/assets/brand-emblem.jpg",
+  brandEmblem: "/assets/official-logo-dv.jpg",
   officialLogo: "/assets/official-logo-dv.jpg",
   socialLinks: {
     facebook: "https://www.facebook.com/share/1Da48RwW55/",

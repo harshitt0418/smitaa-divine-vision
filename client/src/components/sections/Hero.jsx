@@ -31,20 +31,20 @@ export default function Hero() {
 
   return (
     <section id="home" className="relative pt-32 pb-20 sm:pt-40 sm:pb-28 lg:pt-44 lg:pb-32 overflow-hidden">
-      {/* Restrained celestial orbits & ambient elements */}
+      {/* Restrained celestial orbits & ambient elements with multi-speed slow motion */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[800px] h-[600px] sm:h-[800px] celestial-orbit pointer-events-none opacity-20 animate-spin-very-slow" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[500px] h-[400px] sm:h-[500px] celestial-orbit pointer-events-none opacity-15" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[500px] h-[400px] sm:h-[500px] celestial-orbit pointer-events-none opacity-15 animate-spin-slow" />
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 animate-in fade-in duration-700">
         {/* Intro Badge & Conclave Tag */}
         <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
-          <Badge variant="gold" size="md" icon={Sparkles}>
+          <Badge variant="gold" size="md" icon={Sparkles} className="animate-pulse-subtle">
             {SITE_CONFIG.brandName} &bull; {SITE_CONFIG.practitionerName}
           </Badge>
           <a
             href="#recognition"
             onClick={scrollToRecognition}
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-midnight-900 border border-gold-500/30 text-gold-300 hover:text-white hover:border-gold-400 text-xs transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-midnight-900 border border-gold-500/30 text-gold-300 hover:text-white hover:border-gold-400 text-xs transition-all hover:scale-105 duration-300 shadow-sm"
           >
             <Award className="w-3.5 h-3.5 text-gold-400" />
             <span>Featured at Navbharat Astro Mahasangam</span>
@@ -73,6 +73,7 @@ export default function Hero() {
             variant="primary"
             size="lg"
             icon={Compass}
+            className="shadow-gold-glow hover:scale-105 transition-all duration-300"
             ariaLabel="Explore the consultation disciplines"
           >
             Explore Consultations
@@ -84,6 +85,7 @@ export default function Hero() {
             variant="secondary"
             size="lg"
             icon={Award}
+            className="hover:scale-105 transition-all duration-300"
             ariaLabel="View media recognition and events"
           >
             Media & Recognition
@@ -95,7 +97,8 @@ export default function Hero() {
             variant="outline"
             size="lg"
             icon={BookOpen}
-            ariaLabel="Discover the featured book"
+            className="hover:scale-105 transition-all duration-300"
+            ariaLabel="Discover the published numerology book"
           >
             The Book
           </Button>

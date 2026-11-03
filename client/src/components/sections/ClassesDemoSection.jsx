@@ -20,7 +20,7 @@ export default function ClassesDemoSection() {
   const { classDemos } = SITE_CONFIG;
 
   return (
-    <section id="classes" className="py-20 sm:py-28 relative overflow-hidden bg-midnight-950/70 border-t border-white/5">
+    <section id="classes" className="py-20 sm:py-28 relative overflow-hidden bg-midnight-950/70 border-t border-white/5 reveal-on-scroll">
       {/* Background ambient gradient */}
       <div className="absolute top-1/2 -right-40 w-96 h-96 bg-gold-500/5 rounded-full blur-[120px] pointer-events-none" />
 

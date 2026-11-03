@@ -24,11 +24,11 @@ export default function Footer() {
           {/* Col 1: Brand & Bio Summary */}
           <div className="space-y-4 text-left">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full border border-gold-500/40 bg-black flex items-center justify-center overflow-hidden shrink-0">
+              <div className="w-11 h-11 rounded-full border border-gold-500/40 bg-black flex items-center justify-center overflow-hidden shrink-0 shadow-[0_0_12px_rgba(212,175,55,0.2)]">
                 <img
-                  src={SITE_CONFIG.brandEmblem}
-                  alt={SITE_CONFIG.brandName}
-                  className="w-full h-full object-cover"
+                  src={SITE_CONFIG.officialLogo}
+                  alt="Smitaa Divine Vision official logo"
+                  className="w-full h-full object-contain filter drop-shadow-[0_0_6px_rgba(212,175,55,0.25)]"
                 />
               </div>
               <div className="flex flex-col">

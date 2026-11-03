@@ -21,7 +21,7 @@ export default function BookSection() {
   };
 
   return (
-    <section id="book" className="py-20 sm:py-28 relative overflow-hidden border-t border-white/5">
+    <section id="book" className="py-20 sm:py-28 relative overflow-hidden border-t border-white/5 reveal-on-scroll">
       {/* Background ambient lighting */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-gold-500/5 rounded-full blur-[140px] pointer-events-none" />
 

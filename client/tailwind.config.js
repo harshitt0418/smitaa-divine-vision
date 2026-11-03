@@ -60,18 +60,30 @@ export default {
       },
       animation: {
         'float-slow': 'float 8s ease-in-out infinite',
+        'float-gentle': 'floatGentle 5s ease-in-out infinite',
         'spin-very-slow': 'spin 60s linear infinite',
+        'spin-slow': 'spin 30s linear infinite',
         'pulse-subtle': 'pulseSubtle 4s ease-in-out infinite',
+        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
         'shimmer': 'shimmer 2.5s infinite linear',
+        'shimmer-slow': 'shimmer 4s infinite linear',
       },
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-8px)' },
         },
+        floatGentle: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-4px)' },
+        },
         pulseSubtle: {
           '0%, 100%': { opacity: '0.4', transform: 'scale(1)' },
           '50%': { opacity: '0.7', transform: 'scale(1.03)' },
+        },
+        pulseGlow: {
+          '0%, 100%': { filter: 'drop-shadow(0 0 8px rgba(212, 175, 55, 0.2))' },
+          '50%': { filter: 'drop-shadow(0 0 18px rgba(212, 175, 55, 0.45))' },
         },
         shimmer: {
           '0%': { backgroundPosition: '-200% 0' },

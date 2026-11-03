@@ -24,7 +24,7 @@ export default function AboutSection() {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
 
   return (
-    <section id="about" className="py-20 sm:py-28 relative overflow-hidden bg-midnight-950/70 border-t border-white/5">
+    <section id="about" className="py-20 sm:py-28 relative overflow-hidden bg-midnight-950/70 border-t border-white/5 reveal-on-scroll">
       {/* Background ambient lighting */}
       <div className="absolute top-1/2 -right-40 w-96 h-96 bg-gold-500/5 rounded-full blur-[140px] pointer-events-none" />
 
@@ -89,11 +89,11 @@ export default function AboutSection() {
 
             {/* Brand Emblem & Identity Card */}
             <div className="card-celestial p-4 rounded-xl flex items-center gap-4 border-gold-500/20">
-              <div className="w-14 h-14 rounded-full overflow-hidden border border-gold-500/40 shrink-0 bg-black">
+              <div className="w-14 h-14 rounded-full overflow-hidden border border-gold-500/40 shrink-0 bg-black flex items-center justify-center shadow-[0_0_15px_rgba(212,175,55,0.25)]">
                 <img
-                  src={SITE_CONFIG.brandEmblem}
-                  alt="Smitaa Divine Vision celestial brand emblem"
-                  className="w-full h-full object-cover"
+                  src={SITE_CONFIG.officialLogo}
+                  alt="Smitaa Divine Vision official logo"
+                  className="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(212,175,55,0.3)]"
                 />
               </div>
               <div className="text-left text-xs">

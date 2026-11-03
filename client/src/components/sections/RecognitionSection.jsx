@@ -38,7 +38,7 @@ export default function RecognitionSection() {
   };
 
   return (
-    <section id="recognition" className="py-20 sm:py-28 relative overflow-hidden border-t border-white/5">
+    <section id="recognition" className="py-20 sm:py-28 relative overflow-hidden border-t border-white/5 reveal-on-scroll">
       {/* Background ambient lighting */}
       <div className="absolute top-1/3 -left-40 w-96 h-96 bg-gold-500/5 rounded-full blur-[140px] pointer-events-none" />
 
