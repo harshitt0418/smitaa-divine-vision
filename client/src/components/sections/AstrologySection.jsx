@@ -4,9 +4,15 @@ import Button from "../ui/Button";
 import Badge from "../ui/Badge";
 import { SERVICES } from "../../data/services";
 
-export default function AstrologySection() {
+export default function AstrologySection({ onOpenBookingModal }) {
   const service = SERVICES.find((s) => s.id === "astrology");
   if (!service) return null;
+
+  const handleBookClick = () => {
+    if (onOpenBookingModal) {
+      onOpenBookingModal("astrology-consultation");
+    }
+  };
 
   return (
     <section id="astrology" className="py-20 sm:py-28 relative overflow-hidden border-t border-white/5 reveal-on-scroll">
@@ -91,8 +97,16 @@ export default function AstrologySection() {
                   Astrology Consultation
                 </h3>
                 <p className="text-xs text-ivory-muted mt-1">
-                  Direct one-on-one session with Smitaa
+                  Direct one-on-one session with Smita Singh
                 </p>
+                <div className="mt-2">
+                  <span className="font-cinzel text-2xl font-bold text-gold-400">
+                    ₹2,100
+                  </span>
+                  <span className="text-[11px] text-ivory-muted ml-2">
+                    &bull; Mon–Fri, 1:00 PM – 5:00 PM
+                  </span>
+                </div>
               </div>
 
               <div className="space-y-4 mb-8 text-xs text-ivory-soft">
@@ -118,21 +132,32 @@ export default function AstrologySection() {
                 </p>
               </div>
 
-              {/* Direct WhatsApp CTA Button */}
+              {/* Action Buttons */}
               <div className="space-y-3">
+                <Button
+                  onClick={handleBookClick}
+                  variant="primary"
+                  size="lg"
+                  icon={Calendar}
+                  className="w-full shadow-gold-glow hover:scale-[1.02] transition-transform"
+                  ariaLabel="Book Astrology Consultation appointment"
+                >
+                  Book Astrology Session (₹2,100)
+                </Button>
+
                 <Button
                   href={service.whatsAppLink}
                   external
                   variant="whatsapp"
-                  size="lg"
+                  size="sm"
                   icon={MessageCircle}
-                  className="w-full"
-                  ariaLabel="Book Astrology Consultation via WhatsApp"
+                  className="w-full text-xs"
+                  ariaLabel="Inquire about Astrology Consultation via WhatsApp"
                 >
-                  {service.ctaLabel}
+                  Inquire on WhatsApp
                 </Button>
                 <p className="text-[11px] text-center text-ivory-muted">
-                  Opens WhatsApp with a pre-filled inquiry message
+                  Schedule an appointment Mon–Fri (1:00 PM – 5:00 PM) before payment
                 </p>
               </div>
             </div>

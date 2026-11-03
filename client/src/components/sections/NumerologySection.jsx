@@ -10,15 +10,22 @@ import {
   Sparkles,
   GraduationCap,
   Calculator,
-  ArrowDown
+  ArrowDown,
+  Calendar
 } from "lucide-react";
 import Button from "../ui/Button";
 import Badge from "../ui/Badge";
 import { SERVICES } from "../../data/services";
 
-export default function NumerologySection() {
+export default function NumerologySection({ onOpenBookingModal }) {
   const service = SERVICES.find((s) => s.id === "numerology");
   if (!service) return null;
+
+  const handleBookClick = () => {
+    if (onOpenBookingModal) {
+      onOpenBookingModal("numerology-consultation");
+    }
+  };
 
   const scrollToCalculator = (e) => {
     e.preventDefault();
@@ -68,6 +75,14 @@ export default function NumerologySection() {
                 <p className="text-xs text-ivory-muted mt-1">
                   Personalized analysis by Smita Singh
                 </p>
+                <div className="mt-2">
+                  <span className="font-cinzel text-2xl font-bold text-gold-400">
+                    ₹2,100
+                  </span>
+                  <span className="text-[11px] text-ivory-muted ml-2">
+                    &bull; Mon–Fri, 1:00 PM – 5:00 PM
+                  </span>
+                </div>
               </div>
 
               {/* Number Core Elements Grid */}
@@ -107,15 +122,26 @@ export default function NumerologySection() {
               {/* Action Buttons */}
               <div className="space-y-3">
                 <Button
+                  onClick={handleBookClick}
+                  variant="primary"
+                  size="lg"
+                  icon={Calendar}
+                  className="w-full shadow-gold-glow hover:scale-[1.02] transition-transform"
+                  ariaLabel="Book Numerology Session appointment"
+                >
+                  Book Numerology Session (₹2,100)
+                </Button>
+
+                <Button
                   href={service.whatsAppLink}
                   external
                   variant="whatsapp"
-                  size="lg"
+                  size="sm"
                   icon={MessageCircle}
-                  className="w-full"
-                  ariaLabel="Book Numerology Session via WhatsApp"
+                  className="w-full text-xs"
+                  ariaLabel="Inquire about Numerology Session via WhatsApp"
                 >
-                  {service.ctaLabel}
+                  Inquire on WhatsApp
                 </Button>
 
                 <Button

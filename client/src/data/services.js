@@ -1,5 +1,174 @@
 import { getWhatsAppLink } from "./siteContent";
 
+/**
+ * Exact Consultation and Healing Services (Names & Prices Specified by Client)
+ */
+export const CONSULTATION_SERVICES = [
+  {
+    id: "numerology-consultation",
+    name: "Numerology Consultation",
+    price: 2100,
+    formattedPrice: "₹2,100",
+    category: "Numerology",
+    duration: "45–60 mins",
+    description: "Detailed vibrational analysis of your name, Mulank (birth number), and Bhagyank (destiny number).",
+    tagline: "Vibrational name tuning and core number alignment",
+    iconName: "Hash",
+    badge: "Popular",
+    scheduleNote: "Mon–Fri, 1:00 PM – 5:00 PM IST",
+    focusPointers: ["Mulank & Bhagyank analysis", "Name vibration acoustics", "Current Personal Year cycle"],
+    defaultWhatsAppMessage:
+      "Hello Smita Singh, I would like to book a Numerology Consultation (₹2,100). Please let me know the appointment procedure.",
+  },
+  {
+    id: "astrology-consultation",
+    name: "Astrology Consultation",
+    price: 2100,
+    formattedPrice: "₹2,100",
+    category: "Astrology",
+    duration: "45–60 mins",
+    description: "Personalized birth chart (Kundali) reading, current planetary period (Dasha), and timing of transitions.",
+    tagline: "Comprehensive birth chart and planetary cycles analysis",
+    iconName: "Compass",
+    badge: "Popular",
+    scheduleNote: "Mon–Fri, 1:00 PM – 5:00 PM IST",
+    focusPointers: ["Kundali planetary placements", "Vimshottari Dasha timing", "Grounded reflective guidance"],
+    defaultWhatsAppMessage:
+      "Hello Smita Singh, I would like to book an Astrology Consultation (₹2,100). Please let me know the appointment procedure.",
+  },
+  {
+    id: "personal-in-person-consultation",
+    name: "Personal / In-Person Consultation",
+    price: 3500,
+    formattedPrice: "₹3,500",
+    category: "In-Person",
+    duration: "60–75 mins",
+    description: "One-on-one in-person consultation session with Smita Singh for in-depth personal or family guidance.",
+    tagline: "Dedicated in-person consultation & holistic guidance",
+    iconName: "Users",
+    badge: "In-Person",
+    scheduleNote: "Mon–Fri, 1:00 PM – 5:00 PM IST",
+    focusPointers: ["Face-to-face personalized review", "Astrology + Numerology synthesis", "Private consultation room"],
+    defaultWhatsAppMessage:
+      "Hello Smita Singh, I would like to book a Personal / In-Person Consultation (₹3,500). Please let me know the available in-person slots.",
+  },
+  {
+    id: "online-consultation-report",
+    name: "Online Consultation with Detailed Report",
+    price: 2100,
+    formattedPrice: "₹2,100",
+    category: "Astrology",
+    duration: "Session + Written Report",
+    description: "Comprehensive live consultation accompanied by an official personalized written summary report.",
+    tagline: "Live consultation with prepared written report",
+    iconName: "FileText",
+    badge: "Includes Report",
+    scheduleNote: "Mon–Fri, 1:00 PM – 5:00 PM IST",
+    focusPointers: ["Live interactive consultation", "Written summary PDF report", "Remedial recommendations"],
+    defaultWhatsAppMessage:
+      "Hello Smita Singh, I would like to book an Online Consultation with Detailed Report (₹2,100).",
+  },
+  {
+    id: "vastu-consultation",
+    name: "Vastu Consultation",
+    price: 5100,
+    formattedPrice: "₹5,100",
+    category: "Vastu",
+    duration: "Comprehensive Review",
+    description: "Directional mapping and functional review of 16 spatial zones for residential homes or workspaces.",
+    tagline: "16-direction spatial balance & architectural harmony",
+    iconName: "Home",
+    badge: "Spatial Alignment",
+    scheduleNote: "Mon–Fri, 1:00 PM – 5:00 PM IST",
+    focusPointers: ["Directional floor-plan mapping", "Non-demolition elemental remedies", "Home & office energization"],
+    defaultWhatsAppMessage:
+      "Hello Smita Singh, I would like to book a Vastu Consultation (₹5,100). Please share the details needed for space analysis.",
+  },
+  {
+    id: "sound-healing-session",
+    name: "Sound Healing Session — 45 minutes",
+    price: 1500,
+    formattedPrice: "₹1,500",
+    category: "Healing",
+    duration: "45 minutes",
+    description: "Deep meditative sound frequency therapy using singing bowls to calm the nervous system and clear blockages.",
+    tagline: "45-minute harmonic chakra resonance therapy",
+    iconName: "Sparkles",
+    badge: "Healing",
+    scheduleNote: "Mon–Fri, 1:00 PM – 5:00 PM IST",
+    focusPointers: ["Acoustic resonance frequencies", "Chakra balancing & stress release", "Meditative restorative space"],
+    defaultWhatsAppMessage:
+      "Hello Smita Singh, I would like to book a Sound Healing Session — 45 minutes (₹1,500).",
+  },
+  {
+    id: "basic-astrology-service",
+    name: "Basic Astrology",
+    price: 5500,
+    formattedPrice: "₹5,500",
+    category: "Astrology",
+    duration: "Extended Guidance",
+    description: "Foundational astrological assessment covering planetary positions, core strengths, and pivotal life cycles.",
+    tagline: "Foundational astrological assessment & life patterns",
+    iconName: "Compass",
+    badge: "Foundational",
+    scheduleNote: "Mon–Fri, 1:00 PM – 5:00 PM IST",
+    focusPointers: ["Core Kundali analysis", "Planetary strengths & weaknesses", "Essential life timing"],
+    defaultWhatsAppMessage:
+      "Hello Smita Singh, I would like to book the Basic Astrology session (₹5,500).",
+  },
+  {
+    id: "advanced-vedic-astrology-service",
+    name: "Advanced Vedic Astrology",
+    price: 11000,
+    formattedPrice: "₹11,000",
+    category: "Astrology",
+    duration: "Master Analysis",
+    description: "Master-level reading examining Divisional Charts (Vargas), intricate Dasha transits, and karmic life themes.",
+    tagline: "Deep divisional chart study & advanced predictive insights",
+    iconName: "Award",
+    badge: "Master Level",
+    scheduleNote: "Mon–Fri, 1:00 PM – 5:00 PM IST",
+    focusPointers: ["Navamsha (D9) & Dashamsha (D10)", "Deep transit & yoga examination", "Holistic remedial blueprint"],
+    defaultWhatsAppMessage:
+      "Hello Smita Singh, I would like to book the Advanced Vedic Astrology consultation (₹11,000).",
+  },
+  {
+    id: "basic-vastu-service",
+    name: "Basic Vastu",
+    price: 2500,
+    formattedPrice: "₹2,500",
+    category: "Vastu",
+    duration: "Essential Review",
+    description: "Key directional review of entrance, master bedroom, and kitchen with straightforward non-demolition adjustments.",
+    tagline: "Essential directional zoning & energy balance",
+    iconName: "Home",
+    badge: "Essential Review",
+    scheduleNote: "Mon–Fri, 1:00 PM – 5:00 PM IST",
+    focusPointers: ["Primary zones & entrance check", "Elemental balance remedies", "Budget-friendly non-structural tips"],
+    defaultWhatsAppMessage:
+      "Hello Smita Singh, I would like to book the Basic Vastu review (₹2,500).",
+  },
+  {
+    id: "advanced-vastu-service",
+    name: "Advanced Vastu",
+    price: 11000,
+    formattedPrice: "₹11,000",
+    category: "Vastu",
+    duration: "Full Space Architecture",
+    description: "Exhaustive energy scanning, commercial/estate mapping, geopathic stress review, and advanced remedial grid work.",
+    tagline: "Commercial/estate mapping & multi-zone energy remediation",
+    iconName: "Layers",
+    badge: "Full Architecture",
+    scheduleNote: "Mon–Fri, 1:00 PM – 5:00 PM IST",
+    focusPointers: ["Commercial & residential full grid", "Geopathic stress & energy balancing", "Comprehensive remedial yantras & remedies"],
+    defaultWhatsAppMessage:
+      "Hello Smita Singh, I would like to book the Advanced Vastu consultation (₹11,000).",
+  },
+];
+
+/**
+ * Three Core Pillars for Educational and Informational UI Sections
+ */
 export const SERVICES = [
   {
     id: "astrology",
@@ -16,8 +185,9 @@ export const SERVICES = [
     ],
     whoIsItFor: "Individuals standing at major life crossroads—considering career transitions, evaluating business timing, navigating personal relationships, or seeking self-understanding through a classical reflective tradition.",
     ethicalNote: "Sessions offer interpretive insight and reflective counsel. We do not claim fatalistic certainty, unalterable predictions, or guaranteed external outcomes.",
-    ctaLabel: "Book Astrology Consultation",
-    whatsAppMessage: "Hello Smita Singh, I’m interested in booking an Astrology consultation. Please share the available timings and what details you need from me.",
+    ctaLabel: "Book Astrology Consultation — ₹2,100",
+    defaultServiceId: "astrology-consultation",
+    whatsAppMessage: "Hello Smita Singh, I’m interested in booking an Astrology consultation (₹2,100). Please share the appointment schedule.",
     get whatsAppLink() {
       return getWhatsAppLink(this.whatsAppMessage);
     },
@@ -41,8 +211,9 @@ export const SERVICES = [
     ],
     whoIsItFor: "Seekers wanting a clear, structured analytical perspective on their personal tendencies, professionals exploring name or brand optimization, and anyone curious about the numerical cycles governing their current chapter of life.",
     ethicalNote: "Numerology is an interpretive symbolic discipline that facilitates self-reflection. We do not claim scientific proof or promise automatic financial or personal results.",
-    ctaLabel: "Book Numerology Session",
-    whatsAppMessage: "Hello Smita Singh, I’m interested in booking a Numerology session. Please share the available timings and what details you need from me.",
+    ctaLabel: "Book Numerology Session — ₹2,100",
+    defaultServiceId: "numerology-consultation",
+    whatsAppMessage: "Hello Smita Singh, I’m interested in booking a Numerology session (₹2,100). Please share the appointment schedule.",
     get whatsAppLink() {
       return getWhatsAppLink(this.whatsAppMessage);
     },
@@ -66,8 +237,9 @@ export const SERVICES = [
     ],
     whoIsItFor: "Homeowners, tenants, and business leaders seeking a serene, balanced environment, whether moving into a new property, renovating, or resolving persistent feelings of restlessness in a current layout.",
     ethicalNote: "Our Vastu consultations are grounded, sensible, and architectural. We strictly avoid fear-based superstitions, costly demolition mandates, or promises of guaranteed instant wealth.",
-    ctaLabel: "Book Vastu Consultation",
-    whatsAppMessage: "Hello Smita Singh, I’m interested in booking a Vastu consultation. Please share the available timings and what details you need from me.",
+    ctaLabel: "Book Vastu Consultation — ₹5,100",
+    defaultServiceId: "vastu-consultation",
+    whatsAppMessage: "Hello Smita Singh, I’m interested in booking a Vastu consultation (₹5,100). Please share the appointment schedule.",
     get whatsAppLink() {
       return getWhatsAppLink(this.whatsAppMessage);
     },
@@ -77,3 +249,7 @@ export const SERVICES = [
     keyInquiryItems: ["Floor plan or rough directional sketch", "Property compass orientation (North direction)", "Photographs/video walkthrough of key zones"]
   }
 ];
+
+export function getConsultationById(id) {
+  return CONSULTATION_SERVICES.find((s) => s.id === id) || CONSULTATION_SERVICES[0];
+}

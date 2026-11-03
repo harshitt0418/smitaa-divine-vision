@@ -107,17 +107,30 @@ export default function Header({ onOpenBookingModal }) {
           {/* Right: Actions (Book a Session Button & Mobile Toggle) */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0 z-10">
             <div className="hidden sm:block">
-              <Button
-                href={generalWhatsAppBooking}
-                external
-                variant="primary"
-                size="sm"
-                icon={MessageCircle}
-                ariaLabel="Book a consultation session via WhatsApp"
-                className="hover:scale-105 transition-transform duration-300 shadow-gold-glow"
-              >
-                Book a Session
-              </Button>
+              {onOpenBookingModal ? (
+                <Button
+                  onClick={() => onOpenBookingModal()}
+                  variant="primary"
+                  size="sm"
+                  icon={MessageCircle}
+                  ariaLabel="Book a consultation session appointment"
+                  className="hover:scale-105 transition-transform duration-300 shadow-gold-glow"
+                >
+                  Book a Session
+                </Button>
+              ) : (
+                <Button
+                  href={generalWhatsAppBooking}
+                  external
+                  variant="primary"
+                  size="sm"
+                  icon={MessageCircle}
+                  ariaLabel="Book a consultation session via WhatsApp"
+                  className="hover:scale-105 transition-transform duration-300 shadow-gold-glow"
+                >
+                  Book a Session
+                </Button>
+              )}
             </div>
 
             {/* Mobile / Tablet Menu Button */}
@@ -171,6 +184,21 @@ export default function Header({ onOpenBookingModal }) {
               </a>
             ))}
             <div className="pt-4 flex flex-col gap-3">
+              {onOpenBookingModal && (
+                <Button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenBookingModal();
+                  }}
+                  variant="primary"
+                  size="md"
+                  icon={MessageCircle}
+                  className="w-full"
+                  ariaLabel="Book Consultation Appointment"
+                >
+                  Book Appointment (Mon–Fri)
+                </Button>
+              )}
               <Button
                 href={generalWhatsAppBooking}
                 external

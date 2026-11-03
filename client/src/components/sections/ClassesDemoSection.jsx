@@ -16,18 +16,26 @@ import {
   Award,
   Users,
   Compass,
-  ArrowRight
+  ArrowRight,
+  CreditCard,
+  Lock,
 } from "lucide-react";
 import Button from "../ui/Button";
 import Badge from "../ui/Badge";
 import { SITE_CONFIG, getWhatsAppLink } from "../../data/siteContent";
 
-export default function ClassesDemoSection() {
-  const { classDemos, classPrograms } = SITE_CONFIG;
-  const [activeTab, setActiveTab] = useState("programs"); // 'programs' | 'demos'
+export default function ClassesDemoSection({ onOpenClassPurchaseModal }) {
+  const { classDemos, recordedClasses } = SITE_CONFIG;
+  const [activeTab, setActiveTab] = useState("recorded"); // 'recorded' | 'demos'
+
+  const handleEnrollClick = (classId) => {
+    if (onOpenClassPurchaseModal) {
+      onOpenClassPurchaseModal(classId);
+    }
+  };
 
   const generalClassInquiry = getWhatsAppLink(
-    "Hello Smita Singh, I visited the classes section on your website and would like to inquire about upcoming Numerology batch schedules, syllabus, and enrollment details."
+    "Hello Smita Singh, I visited the classes section on your website and would like to inquire about your recorded masterclasses and drive access."
   );
 
   return (
@@ -40,62 +48,62 @@ export default function ClassesDemoSection() {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-10">
           <Badge variant="gold" size="sm" icon={GraduationCap} className="animate-pulse-subtle">
-            Educational Academy & Masterclasses
+            Academy & Recorded Masterclasses
           </Badge>
           <h2 className="font-cinzel text-2xl sm:text-4xl lg:text-5xl font-bold text-ivory-light mt-4 mb-3">
-            Numerology Classes & Masterclasses
+            Online Recorded Classes & Lecture Demos
           </h2>
           <p className="font-cormorant italic text-lg sm:text-xl text-gold-300">
-            Preview recorded lecture demos on Google Drive and book your seat in upcoming live certification batches.
+            Learn at your own pace with lifetime Google Drive video access, student notes, and verified certification.
           </p>
           <p className="text-xs text-ivory-muted mt-2 max-w-2xl mx-auto leading-relaxed">
-            Smita Singh conducts mentor-led, structured Numerology training combining classical Vedic systems, Chaldean acoustics, and practical client case studies.
+            Smita Singh conducts mentor-led, structured Numerology, Astrology, and Vastu courses combining classical principles with real-life case studies.
           </p>
         </div>
 
-        {/* Interactive Workflow Switcher: Book Classes vs Access Google Drive Demos */}
+        {/* Interactive Tab Switcher: Recorded Masterclasses vs Google Drive Demos */}
         <div className="flex justify-center mb-12">
           <div className="inline-flex p-1.5 rounded-2xl bg-midnight-900 border border-gold-500/30 shadow-card">
             <button
               type="button"
-              onClick={() => setActiveTab("programs")}
+              onClick={() => setActiveTab("recorded")}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 ${
-                activeTab === "programs"
-                  ? "bg-gold-500 text-midnight-950 shadow-gold-glow scale-[1.02]"
+                activeTab === "recorded"
+                  ? "bg-gold-500 text-midnight-950 shadow-gold-glow scale-[1.02] font-bold"
                   : "text-ivory-muted hover:text-white hover:bg-white/5"
               }`}
             >
               <GraduationCap className="w-4 h-4" />
-              <span>Book Class Programs (3 Batches)</span>
+              <span>Online Recorded Classes (5 Courses)</span>
             </button>
             <button
               type="button"
               onClick={() => setActiveTab("demos")}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 ${
                 activeTab === "demos"
-                  ? "bg-gold-500 text-midnight-950 shadow-gold-glow scale-[1.02]"
+                  ? "bg-gold-500 text-midnight-950 shadow-gold-glow scale-[1.02] font-bold"
                   : "text-ivory-muted hover:text-white hover:bg-white/5"
               }`}
             >
               <HardDrive className="w-4 h-4" />
-              <span>Watch Drive Demos (3 Parts)</span>
+              <span>Watch Drive Demos (3 Lectures)</span>
             </button>
           </div>
         </div>
 
         {/* ======================================================== */}
-        {/* TAB 1: CLASS PROGRAMS & BOOKING (Like Consultancy)       */}
+        {/* TAB 1: 5 ONLINE RECORDED CLASSES (Exact Order & Prices)  */}
         {/* ======================================================== */}
-        {activeTab === "programs" && (
-          <div className="space-y-12 animate-in fade-in zoom-in-95 duration-400">
-            {/* Quick Helper / Reassurance Banner */}
+        {activeTab === "recorded" && (
+          <div className="space-y-10 animate-in fade-in zoom-in-95 duration-400">
+            {/* Quick Helper Banner */}
             <div className="p-4 rounded-xl bg-midnight-900/60 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-ivory-muted max-w-5xl mx-auto">
               <div className="flex items-center gap-3 text-center sm:text-left">
                 <div className="w-9 h-9 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-400 flex items-center justify-center shrink-0">
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <span>
-                  <strong>Want to preview the teaching style first?</strong> You can access recorded class demos on Google Drive anytime.
+                  <strong>Instant Course Enrollment:</strong> Secure your class via Razorpay and receive verified Google Drive access and course materials.
                 </span>
               </div>
               <button
@@ -103,60 +111,69 @@ export default function ClassesDemoSection() {
                 onClick={() => setActiveTab("demos")}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-midnight-950 border border-gold-500/30 text-gold-300 hover:text-white hover:border-gold-400 transition-colors shrink-0 text-xs font-medium"
               >
-                <span>Switch to Drive Demos</span>
+                <span>Preview Lecture Demos</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
 
-            {/* 3 Structured Class Booking Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto items-stretch">
-              {classPrograms.map((program, index) => {
-                const programWhatsAppLink = getWhatsAppLink(program.whatsAppMessage);
+            {/* 5 Recorded Classes Grid (in exact order: 1. Numerology ₹2,999, 2. Basic Astrology ₹3,999, 3. Advanced Vedic Astrology ₹7,999, 4. Basic Vastu ₹2,999, 5. Advanced Vastu ₹7,999) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto items-stretch">
+              {recordedClasses.map((cls, index) => {
+                const classWhatsAppLink = getWhatsAppLink(cls.whatsAppMessage);
+
                 return (
                   <div
-                    key={program.id}
+                    key={cls.id}
                     className="card-celestial p-6 sm:p-7 rounded-2xl flex flex-col justify-between space-y-6 hover:border-gold-500/50 hover:shadow-card transition-all duration-300 group"
                   >
                     <div className="space-y-5">
                       {/* Top Header Pill */}
                       <div className="flex items-center justify-between pb-3 border-b border-white/10">
                         <span className="text-[10px] font-cinzel font-bold text-gold-400 uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-gold-500/10 border border-gold-500/20">
-                          {program.level}
+                          {cls.badge}
                         </span>
                         <span className="text-[11px] text-ivory-muted">
-                          Batch Option 0{index + 1}
+                          Order 0{cls.order || index + 1}
                         </span>
                       </div>
 
-                      {/* Course Title & Subtitle */}
+                      {/* Course Title & Price */}
                       <div>
                         <h3 className="font-cinzel text-lg sm:text-xl font-bold text-ivory-light group-hover:text-gold-300 transition-colors leading-snug">
-                          {program.title}
+                          {cls.name}
                         </h3>
-                        <p className="text-xs text-gold-400 font-medium mt-1">
-                          {program.subtitle}
+                        <div className="mt-2 flex items-baseline gap-2">
+                          <span className="font-cinzel text-2xl sm:text-3xl font-bold text-gold-400">
+                            {cls.formattedPrice}
+                          </span>
+                          <span className="text-[10px] text-ivory-muted uppercase tracking-wider">
+                            Full Recorded Course
+                          </span>
+                        </div>
+                        <p className="text-xs text-gold-300/90 font-medium mt-1.5">
+                          {cls.subtitle}
                         </p>
                       </div>
 
-                      {/* Duration & Format Badge */}
+                      {/* Format Badge */}
                       <div className="space-y-1.5 p-3 rounded-xl bg-midnight-950/70 border border-white/5 text-[11px]">
                         <div className="flex items-center gap-2 text-ivory-light">
-                          <Clock className="w-3.5 h-3.5 text-gold-400 shrink-0" />
-                          <span>{program.duration}</span>
+                          <HardDrive className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                          <span>{cls.format}</span>
                         </div>
                         <div className="flex items-center gap-2 text-ivory-muted">
-                          <Users className="w-3.5 h-3.5 text-gold-400 shrink-0" />
-                          <span>{program.format}</span>
+                          <Clock className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                          <span>{cls.duration}</span>
                         </div>
                       </div>
 
                       {/* Curriculum Highlights */}
                       <div className="space-y-2 pt-1">
                         <span className="text-[10px] uppercase tracking-wider font-semibold text-gold-300 block">
-                          Curriculum Highlights:
+                          Included in this Masterclass:
                         </span>
                         <ul className="space-y-2 text-xs text-ivory-soft/90">
-                          {program.highlights.map((item, idx) => (
+                          {cls.highlights.map((item, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-[11px]">
                               <CheckCircle2 className="w-3.5 h-3.5 text-gold-400 shrink-0 mt-0.5" />
                               <span>{item}</span>
@@ -164,34 +181,32 @@ export default function ClassesDemoSection() {
                           ))}
                         </ul>
                       </div>
-
-                      {/* WhatsApp Inquiry Preview */}
-                      <div className="p-3 rounded-xl bg-midnight-950/60 border border-white/5 text-[11px] text-ivory-muted space-y-1">
-                        <span className="font-medium text-gold-300 block text-[10px] uppercase tracking-wider">
-                          Direct WhatsApp Booking:
-                        </span>
-                        <p className="italic text-[10px] text-ivory-muted/80 line-clamp-2">
-                          &ldquo;{program.whatsAppMessage}&rdquo;
-                        </p>
-                      </div>
                     </div>
 
-                    {/* Action Button: Book via WhatsApp */}
+                    {/* Action Buttons: Razorpay Checkout & WhatsApp Inquiry */}
                     <div className="pt-2 border-t border-white/10 space-y-2">
                       <Button
-                        href={programWhatsAppLink}
+                        onClick={() => handleEnrollClick(cls.id)}
+                        variant="primary"
+                        size="md"
+                        icon={CreditCard}
+                        className="w-full shadow-gold-glow hover:scale-[1.02] transition-transform duration-300 text-xs sm:text-sm font-semibold"
+                        ariaLabel={`Enroll in ${cls.name} for ${cls.formattedPrice}`}
+                      >
+                        Enroll Now ({cls.formattedPrice})
+                      </Button>
+
+                      <Button
+                        href={classWhatsAppLink}
                         external
                         variant="whatsapp"
-                        size="md"
+                        size="sm"
                         icon={MessageCircle}
-                        className="w-full shadow-gold-glow hover:scale-[1.02] transition-transform duration-300"
-                        ariaLabel={`Book ${program.title} via WhatsApp`}
+                        className="w-full text-xs"
+                        ariaLabel={`Inquire about ${cls.name} on WhatsApp`}
                       >
-                        Book Class on WhatsApp
+                        Inquire on WhatsApp
                       </Button>
-                      <p className="text-[10px] text-center text-ivory-muted/70">
-                        Redirects directly to WhatsApp with pre-filled batch inquiry
-                      </p>
                     </div>
                   </div>
                 );
@@ -308,7 +323,7 @@ export default function ClassesDemoSection() {
                     <Button
                       href={getWhatsAppLink(
                         demo.whatsAppMessage ||
-                          `Hello Smita Singh, I watched ${demo.title} on Google Drive and would like to book my seat for the upcoming class cohort.`
+                          `Hello Smita Singh, I watched ${demo.title} on Google Drive and would like to enroll in your class.`
                       )}
                       external
                       variant="whatsapp"
@@ -335,21 +350,17 @@ export default function ClassesDemoSection() {
           </div>
           <div>
             <h3 className="font-cinzel text-lg sm:text-2xl font-bold text-ivory-light">
-              Ready to Begin Your Numerological Mastery?
+              Ready to Begin Your Astrological & Numerological Mastery?
             </h3>
             <p className="font-cormorant italic text-base sm:text-lg text-gold-300 mt-1">
-              Personalized interactive batches with direct mentor feedback.
+              Recorded courses with complete curriculum, reference charts, and lifetime Drive access.
             </p>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-left py-2 border-y border-white/10 text-xs">
             <div className="p-2.5 rounded-xl bg-midnight-950/60 border border-white/5 space-y-1">
-              <span className="font-semibold text-gold-300 block text-[11px]">Live Sessions</span>
-              <p className="text-[10px] text-ivory-muted">Interactive live classes with live Q&A</p>
-            </div>
-            <div className="p-2.5 rounded-xl bg-midnight-950/60 border border-white/5 space-y-1">
               <span className="font-semibold text-gold-300 block text-[11px]">Drive Archive</span>
-              <p className="text-[10px] text-ivory-muted">Full lifetime lecture video access</p>
+              <p className="text-[10px] text-ivory-muted">Lifetime HD video lecture access</p>
             </div>
             <div className="p-2.5 rounded-xl bg-midnight-950/60 border border-white/5 space-y-1">
               <span className="font-semibold text-gold-300 block text-[11px]">Study Guides</span>
@@ -357,12 +368,16 @@ export default function ClassesDemoSection() {
             </div>
             <div className="p-2.5 rounded-xl bg-midnight-950/60 border border-white/5 space-y-1">
               <span className="font-semibold text-gold-300 block text-[11px]">Certification</span>
-              <p className="text-[10px] text-ivory-muted">Official completion certificate</p>
+              <p className="text-[10px] text-ivory-muted">Verified completion credentials</p>
+            </div>
+            <div className="p-2.5 rounded-xl bg-midnight-950/60 border border-white/5 space-y-1">
+              <span className="font-semibold text-gold-300 block text-[11px]">Direct Support</span>
+              <p className="text-[10px] text-ivory-muted">Direct WhatsApp clarification support</p>
             </div>
           </div>
 
           <p className="text-xs sm:text-sm text-ivory-muted max-w-2xl mx-auto leading-relaxed">
-            Contact Smita Singh directly on WhatsApp to receive the next batch start date, class timings, and secure enrollment link.
+            Choose any recorded class above to enroll directly via Razorpay, or reach out to Smita Singh on WhatsApp for syllabus details.
           </p>
 
           <div className="pt-2 flex flex-wrap justify-center gap-4">
@@ -373,9 +388,9 @@ export default function ClassesDemoSection() {
               size="lg"
               icon={MessageCircle}
               className="shadow-gold-glow hover:scale-105 transition-all duration-300"
-              ariaLabel="Inquire about Numerology classes via WhatsApp"
+              ariaLabel="Inquire about classes via WhatsApp"
             >
-              Inquire & Book Batch on WhatsApp
+              Inquire on WhatsApp
             </Button>
             <Button
               href="https://drive.google.com/file/d/1UYztXf94v3i5Iqs0L3YM2t0bkYCN35wD/view?usp=drivesdk"

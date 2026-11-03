@@ -138,6 +138,103 @@ export const SITE_CONFIG = {
       whatsAppMessage: "Hello Smita Singh, I watched the student feedback video from your Numerology class on Google Drive and would like to inquire about enrolling in your upcoming batch."
     }
   ],
+  recordedClasses: [
+    {
+      id: "recorded-class-numerology",
+      name: "Numerology",
+      price: 2999,
+      formattedPrice: "₹2,999",
+      order: 1,
+      subtitle: "Complete Foundational & Professional Numerology System",
+      duration: "Full Video Archive + PDF Materials",
+      format: "Recorded Masterclass on Google Drive",
+      badge: "Course 01",
+      highlights: [
+        "Calculation & interpretation of Mulank (Birth) and Bhagyank (Destiny)",
+        "Lo Shu & Vedic grid placements and missing number remedies",
+        "Chaldean & Pythagorean name acoustic correction frameworks",
+        "Personal Year & Month forecasting for major life choices",
+        "Lifetime access to drive recordings & student workbook"
+      ],
+      whatsAppMessage: "Hello Smita Singh, I would like to enroll in the recorded class: Numerology (₹2,999). Please provide access details."
+    },
+    {
+      id: "recorded-class-basic-astrology",
+      name: "Basic Astrology",
+      price: 3999,
+      formattedPrice: "₹3,999",
+      order: 2,
+      subtitle: "Planetary Archetypes, 12 Bhavas & Kundali Fundamentals",
+      duration: "Full Video Archive + PDF Notes",
+      format: "Recorded Masterclass on Google Drive",
+      badge: "Course 02",
+      highlights: [
+        "The 12 Rashis (Zodiac Signs) and 12 Bhavas (Houses) decoded",
+        "Planetary dignities (Exalted, Debilitated, Own, Mooltrikona)",
+        "Step-by-step methodology to read a natal chart (Kundali)",
+        "Understanding Vimshottari Dasha cycles and primary transits",
+        "Comprehensive student reference slides & notes"
+      ],
+      whatsAppMessage: "Hello Smita Singh, I would like to enroll in the recorded class: Basic Astrology (₹3,999). Please provide access details."
+    },
+    {
+      id: "recorded-class-advanced-vedic-astrology",
+      name: "Advanced Vedic Astrology",
+      price: 7999,
+      formattedPrice: "₹7,999",
+      order: 3,
+      subtitle: "Divisional Charts (Vargas), Dasha Timing & Predictive Mastery",
+      duration: "In-Depth Master Series + Case Studies",
+      format: "Advanced Cohort Recordings on Google Drive",
+      badge: "Course 03 • Advanced",
+      highlights: [
+        "Navamsha (D9) and Dashamsha (D10) deep divisional interpretation",
+        "Precise Dasha-Antardasha timing for career and marriage events",
+        "Specialized Yogas: Rajyogas, Dhanyogas, and Vipreet Rajyogas",
+        "Real-world chart synthesis and non-fatalistic counseling methods",
+        "Detailed video case studies and remedial handbook"
+      ],
+      whatsAppMessage: "Hello Smita Singh, I would like to enroll in the recorded class: Advanced Vedic Astrology (₹7,999). Please provide access details."
+    },
+    {
+      id: "recorded-class-basic-vastu",
+      name: "Basic Vastu",
+      price: 2999,
+      formattedPrice: "₹2,999",
+      order: 4,
+      subtitle: "Directional Zones, 5 Elements & Residential Energy Flow",
+      duration: "Full Video Archive + Compass Guides",
+      format: "Recorded Masterclass on Google Drive",
+      badge: "Course 04",
+      highlights: [
+        "The 16 Cardinal & Intercardinal zones of Vastu Shastra",
+        "Pancha Tattva (5 Cosmic Elements) and zone balancing",
+        "Entrance, kitchen, bedroom, and puja space guidelines",
+        "Simple, non-destructive home adjustments and remedies",
+        "Compass mapping worksheets and checklists"
+      ],
+      whatsAppMessage: "Hello Smita Singh, I would like to enroll in the recorded class: Basic Vastu (₹2,999). Please provide access details."
+    },
+    {
+      id: "recorded-class-advanced-vastu",
+      name: "Advanced Vastu",
+      price: 7999,
+      formattedPrice: "₹7,999",
+      order: 5,
+      subtitle: "Commercial Spaces, Geopathic Stress & Advanced Grids",
+      duration: "Professional Master Series + Architectural Plans",
+      format: "Advanced Cohort Recordings on Google Drive",
+      badge: "Course 05 • Advanced",
+      highlights: [
+        "Commercial, factory, and retail store space optimization",
+        "Detecting and harmonizing geopathic stress and energy lines",
+        "Advanced remedial grid activations without demolition",
+        "Professional client consultation workflows & floorplan audits",
+        "Complete architectural layout blueprints and remedial catalog"
+      ],
+      whatsAppMessage: "Hello Smita Singh, I would like to enroll in the recorded class: Advanced Vastu (₹7,999). Please provide access details."
+    }
+  ],
   classPrograms: [
     {
       id: "foundational-numerology",

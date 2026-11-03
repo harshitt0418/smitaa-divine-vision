@@ -1,12 +1,18 @@
 import React from "react";
-import { Home, CheckCircle2, MessageCircle, Compass, Shield, Building2, Wind } from "lucide-react";
+import { Home, CheckCircle2, MessageCircle, Compass, Shield, Building2, Wind, Calendar } from "lucide-react";
 import Button from "../ui/Button";
 import Badge from "../ui/Badge";
 import { SERVICES } from "../../data/services";
 
-export default function VastuSection() {
+export default function VastuSection({ onOpenBookingModal }) {
   const service = SERVICES.find((s) => s.id === "vastu");
   if (!service) return null;
+
+  const handleBookClick = () => {
+    if (onOpenBookingModal) {
+      onOpenBookingModal("vastu-consultation");
+    }
+  };
 
   return (
     <section id="vastu" className="py-20 sm:py-28 relative overflow-hidden border-t border-white/5 reveal-on-scroll">
@@ -87,6 +93,14 @@ export default function VastuSection() {
                 <p className="text-xs text-ivory-muted mt-1">
                   Residential sanctuaries & commercial workspaces
                 </p>
+                <div className="mt-2">
+                  <span className="font-cinzel text-2xl font-bold text-gold-400">
+                    ₹5,100
+                  </span>
+                  <span className="text-[11px] text-ivory-muted ml-2">
+                    &bull; Mon–Fri, 1:00 PM – 5:00 PM
+                  </span>
+                </div>
               </div>
 
               <div className="space-y-4 mb-8 text-xs text-ivory-soft">
@@ -112,21 +126,32 @@ export default function VastuSection() {
                 </p>
               </div>
 
-              {/* Direct WhatsApp CTA Button */}
+              {/* Action Buttons */}
               <div className="space-y-3">
+                <Button
+                  onClick={handleBookClick}
+                  variant="primary"
+                  size="lg"
+                  icon={Calendar}
+                  className="w-full shadow-gold-glow hover:scale-[1.02] transition-transform"
+                  ariaLabel="Book Vastu Consultation appointment"
+                >
+                  Book Vastu Consultation (₹5,100)
+                </Button>
+
                 <Button
                   href={service.whatsAppLink}
                   external
                   variant="whatsapp"
-                  size="lg"
+                  size="sm"
                   icon={MessageCircle}
-                  className="w-full"
-                  ariaLabel="Book Vastu Consultation via WhatsApp"
+                  className="w-full text-xs"
+                  ariaLabel="Inquire about Vastu Consultation via WhatsApp"
                 >
-                  {service.ctaLabel}
+                  Inquire on WhatsApp
                 </Button>
                 <p className="text-[11px] text-center text-ivory-muted">
-                  Pre-filled message: "Hello Smitaa, I’m interested in booking a Vastu consultation..."
+                  Schedule appointment Mon–Fri (1:00 PM – 5:00 PM) before payment
                 </p>
               </div>
             </div>

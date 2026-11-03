@@ -2,6 +2,12 @@ import express from "express";
 import { getTestimonials, createTestimonial } from "../controllers/testimonialController.js";
 import { createInquiry, getInquiries } from "../controllers/inquiryController.js";
 import { getSiteInfo, updateSiteSetting } from "../controllers/siteSettingController.js";
+import {
+  getPaymentConfig,
+  getCatalog,
+  createOrder,
+  verifyPayment,
+} from "../controllers/paymentController.js";
 import { isDbConnected } from "../config/db.js";
 
 const router = express.Router();
@@ -15,6 +21,12 @@ router.get("/health", (req, res) => {
     service: "Smitaa Divine Vision API",
   });
 });
+
+// Payments & Booking Endpoints
+router.get("/payments/config", getPaymentConfig);
+router.get("/payments/catalog", getCatalog);
+router.post("/payments/create-order", createOrder);
+router.post("/payments/verify-payment", verifyPayment);
 
 // Testimonials
 router.get("/testimonials", getTestimonials);

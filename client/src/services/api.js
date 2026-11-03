@@ -52,9 +52,73 @@ export async function submitInquiry(inquiryData) {
     return await response.json();
   } catch (err) {
     console.warn("Could not save to MongoDB, gracefully logged:", err.message);
-    // Return mock success so user's experience is seamless
     return { success: true, fallback: true, message: "Inquiry received" };
   }
+}
+
+/**
+ * Fetch public payment configuration (keyId, paymentLink, whatsappNumber)
+ */
+export async function getPaymentConfig() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/payments/config`);
+    if (response.ok) {
+      return await response.json();
+    }
+    return {
+      keyId: null,
+      paymentLink: "https://razorpay.me/@diivinevision",
+      whatsappNumber: "919119860551",
+      isConfigured: false,
+    };
+  } catch {
+    return {
+      keyId: null,
+      paymentLink: "https://razorpay.me/@diivinevision",
+      whatsappNumber: "919119860551",
+      isConfigured: false,
+    };
+  }
+}
+
+/**
+ * Create a Razorpay Order and Booking Record
+ */
+export async function createPaymentOrder(orderPayload) {
+  const response = await fetch(`${API_BASE_URL}/payments/create-order`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(orderPayload),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || "Failed to create payment order");
+  }
+
+  return data;
+}
+
+/**
+ * Server-side payment signature verification
+ */
+export async function verifyPayment(verifyPayload) {
+  const response = await fetch(`${API_BASE_URL}/payments/verify-payment`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(verifyPayload),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || "Payment verification failed");
+  }
+
+  return data;
 }
 
 /**

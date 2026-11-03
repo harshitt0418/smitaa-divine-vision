@@ -13,12 +13,31 @@ import AboutSection from "./components/sections/AboutSection";
 import BookSection from "./components/sections/BookSection";
 import ReviewsSection from "./components/sections/ReviewsSection";
 import BookingCTA from "./components/sections/BookingCTA";
+import AppointmentBookingModal from "./components/booking/AppointmentBookingModal";
+import ClassPurchaseModal from "./components/booking/ClassPurchaseModal";
 import { getTestimonials } from "./services/api";
 import { VERIFIED_REVIEWS } from "./data/testimonials";
 
 export default function App() {
   const [reviews, setReviews] = useState(VERIFIED_REVIEWS);
   const [isLoadingReviews, setIsLoadingReviews] = useState(true);
+
+  // Booking Modals State
+  const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false);
+  const [selectedServiceId, setSelectedServiceId] = useState("astrology-consultation");
+
+  const [isClassModalOpen, setIsClassModalOpen] = useState(false);
+  const [selectedClassId, setSelectedClassId] = useState("recorded-class-numerology");
+
+  const handleOpenBooking = (serviceId = "astrology-consultation") => {
+    setSelectedServiceId(serviceId);
+    setIsAppointmentModalOpen(true);
+  };
+
+  const handleOpenClassPurchase = (classId = "recorded-class-numerology") => {
+    setSelectedClassId(classId);
+    setIsClassModalOpen(true);
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -72,7 +91,7 @@ export default function App() {
       <CelestialBackground />
 
       {/* Main sticky navigation */}
-      <Header />
+      <Header onOpenBookingModal={handleOpenBooking} />
 
       {/* Main Structured Flow */}
       <main id="main-content" className="flex-grow z-10">
@@ -83,19 +102,19 @@ export default function App() {
         <RecognitionSection />
 
         {/* 3. Vedic Astrology (Jyotish) */}
-        <AstrologySection />
+        <AstrologySection onOpenBookingModal={handleOpenBooking} />
 
         {/* 4. Numerology Foundation */}
-        <NumerologySection />
+        <NumerologySection onOpenBookingModal={handleOpenBooking} />
 
         {/* 5. Interactive Core Numbers Calculator */}
         <NumerologyCalculator />
 
-        {/* 6. Numerology Classes Demo Videos */}
-        <ClassesDemoSection />
+        {/* 6. Online Recorded Classes & Demo Videos */}
+        <ClassesDemoSection onOpenClassPurchaseModal={handleOpenClassPurchase} />
 
         {/* 7. Vastu Shastra & Spatial Harmony */}
-        <VastuSection />
+        <VastuSection onOpenBookingModal={handleOpenBooking} />
 
         {/* 8. About Smita Singh & Professional Background */}
         <AboutSection />
@@ -106,12 +125,25 @@ export default function App() {
         {/* 10. Authentic Client Reviews & Verification Lightbox */}
         <ReviewsSection backendReviews={reviews} />
 
-        {/* 11. Final Booking CTA & WhatsApp Options */}
-        <BookingCTA />
+        {/* 11. Final Booking CTA & Full 10 Consultations/Healing Catalog */}
+        <BookingCTA onOpenBookingModal={handleOpenBooking} />
       </main>
 
       {/* Footer */}
       <Footer />
+
+      {/* Global Interactive Booking & Payment Modals */}
+      <AppointmentBookingModal
+        isOpen={isAppointmentModalOpen}
+        onClose={() => setIsAppointmentModalOpen(false)}
+        initialServiceId={selectedServiceId}
+      />
+
+      <ClassPurchaseModal
+        isOpen={isClassModalOpen}
+        onClose={() => setIsClassModalOpen(false)}
+        initialClassId={selectedClassId}
+      />
     </div>
   );
 }
