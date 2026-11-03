@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Star, MessageSquare, ExternalLink, ShieldCheck, Image as ImageIcon } from "lucide-react";
+import { Star, MessageSquare, ExternalLink, ShieldCheck, Image as ImageIcon, Eye } from "lucide-react";
 import { InstagramIcon, YoutubeIcon, FacebookIcon } from "../ui/SocialIcons";
 import Button from "../ui/Button";
 import Badge from "../ui/Badge";
@@ -19,7 +19,17 @@ export default function ReviewsSection({ backendReviews = [] }) {
   const filteredReviews =
     activeCategory === "All"
       ? allReviews
-      : allReviews.filter((r) => r.category === activeCategory);
+      : allReviews.filter((r) => {
+          if (r.category === activeCategory) return true;
+          // Rajiv Kumar review mentions both consultation session and teaching style, so show in both
+          if (
+            r.reviewerName === "Rajiv Kumar" &&
+            (activeCategory === "Consultations" || activeCategory === "Numerology & Courses")
+          ) {
+            return true;
+          }
+          return false;
+        });
 
   return (
     <section id="reviews" className="py-20 sm:py-28 relative overflow-hidden bg-midnight-950/60 border-t border-white/5">
@@ -94,26 +104,26 @@ export default function ReviewsSection({ backendReviews = [] }) {
                 )}
               </div>
 
-              {/* Reviewer signature and transparent verification button */}
-              <div className="pt-4 border-t border-white/10 flex items-center justify-between">
+              {/* Reviewer signature and prominent verification button */}
+              <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div>
                   <p className="font-cinzel text-xs font-bold text-ivory-light">
                     {review.reviewerName}
                   </p>
                   <p className="text-[10px] text-ivory-muted">
-                    {review.category}
+                    {review.category} {review.verifiedDate ? `• ${review.verifiedDate}` : ""}
                   </p>
                 </div>
 
                 {review.screenshot && (
                   <button
                     onClick={() => setSelectedScreenshot(review)}
-                    className="p-1.5 rounded-lg bg-midnight-900 border border-white/10 hover:border-gold-500/40 text-ivory-muted hover:text-gold-300 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 flex items-center gap-1 text-[10px]"
+                    className="py-1.5 px-3 rounded-lg bg-midnight-900 border border-gold-500/25 hover:border-gold-400 text-ivory-muted hover:text-gold-300 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 flex items-center gap-1.5 text-[11px] shrink-0"
                     title="View original feedback clip"
                     aria-label={`View original feedback for ${review.reviewerName}`}
                   >
-                    <ImageIcon className="w-3.5 h-3.5 text-gold-400" />
-                    <span className="hidden sm:inline">Proof</span>
+                    <Eye className="w-3.5 h-3.5 text-gold-400" />
+                    <span>View original feedback</span>
                   </button>
                 )}
               </div>
@@ -128,7 +138,7 @@ export default function ReviewsSection({ backendReviews = [] }) {
               Explore More Content & Community Discussions
             </h3>
             <p className="text-xs sm:text-sm text-ivory-muted">
-              Connect directly on Smitaa's official social channels to view educational reels, discussions, and student community updates:
+              Connect directly on Smita Singh's official social channels to view educational reels, discussions, and student community updates:
             </p>
           </div>
 
@@ -139,7 +149,7 @@ export default function ReviewsSection({ backendReviews = [] }) {
               variant="secondary"
               size="md"
               icon={InstagramIcon}
-              ariaLabel="Visit Smitaa's Instagram profile"
+              ariaLabel="Visit Smita Singh's Instagram profile"
             >
               Instagram @smitaa.divinevision
             </Button>
@@ -161,7 +171,7 @@ export default function ReviewsSection({ backendReviews = [] }) {
               variant="secondary"
               size="md"
               icon={FacebookIcon}
-              ariaLabel="Visit Smitaa on Facebook"
+              ariaLabel="Visit Smita Singh on Facebook"
             >
               Facebook Profile
             </Button>

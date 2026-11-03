@@ -1,5 +1,15 @@
 export const INITIAL_TESTIMONIALS = [
   {
+    quote: "Yes Mam, your session was interesting ,entertaining and educational. The way you teach is really good.",
+    reviewerName: "Rajiv Kumar",
+    platform: "WhatsApp feedback",
+    category: "Consultations",
+    rating: 5,
+    highlight: "Interesting, entertaining and educational session",
+    screenshot: "/assets/reviews/review-rajiv-kumar-whatsapp.jpg",
+    isApproved: true
+  },
+  {
     quote: "This was the most useful thing for me right now. I don't know how to explain it but the overwhelm and anxiety just whooped out of me in these 30 mins. Always always grateful for your sensitivity and willingness to work for everyone around you. 🙏✨✨",
     reviewerName: "Verified Consultation Client",
     platform: "Client feedback",
@@ -17,16 +27,6 @@ export const INITIAL_TESTIMONIALS = [
     rating: 5,
     highlight: "Transformative, engaging, and unique teaching style",
     screenshot: "/assets/reviews/review-course-2.jpg",
-    isApproved: true
-  },
-  {
-    quote: "Yes Mam, your session was interesting ,entertaining and educational. The way you teach is really good.",
-    reviewerName: "Rajiv Kumar",
-    platform: "Client feedback",
-    category: "Consultations",
-    rating: 5,
-    highlight: "Interesting, entertaining and educational session",
-    screenshot: "/assets/reviews/review-whatsapp-2.jpg",
     isApproved: true
   },
   {
@@ -83,12 +83,13 @@ export const INITIAL_TESTIMONIALS = [
 ];
 
 export const INITIAL_SITE_INFO = {
+  practitionerName: "Smita Singh",
   brandName: "Smitaa Divine Vision",
   alternateBrandName: "Numeros Miita",
   tagline: "Grounded Celestial Wisdom for Life's Pivotal Decisions",
   phoneNumberDisplay: "+91 91198 60551",
   whatsappNumber: "919119860551",
-  practitionerNotes: "Consultations are conducted directly by Smitaa. Confidentiality and human dignity are maintained for all clients.",
+  practitionerNotes: "Smita Singh is an MBA and professional astrology, numerology, and Vastu consultant associated with recognised platforms including Navbharat Astro Mahasangam and NBT Times.",
   book: {
     title: "The Divine Digits: Mastering Life Through Digits",
     author: "Dr. Smiita Siingh",

@@ -1,5 +1,17 @@
 import React from "react";
-import { Hash, CheckCircle2, MessageCircle, BookOpen, Shield, Layers, HelpCircle } from "lucide-react";
+import {
+  Hash,
+  CheckCircle2,
+  MessageCircle,
+  BookOpen,
+  Shield,
+  Layers,
+  HelpCircle,
+  Sparkles,
+  GraduationCap,
+  Calculator,
+  ArrowDown
+} from "lucide-react";
 import Button from "../ui/Button";
 import Badge from "../ui/Badge";
 import { SERVICES } from "../../data/services";
@@ -7,6 +19,22 @@ import { SERVICES } from "../../data/services";
 export default function NumerologySection() {
   const service = SERVICES.find((s) => s.id === "numerology");
   if (!service) return null;
+
+  const scrollToCalculator = (e) => {
+    e.preventDefault();
+    const target = document.querySelector("#calculator");
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const scrollToClasses = (e) => {
+    e.preventDefault();
+    const target = document.querySelector("#classes");
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   return (
     <section id="numerology" className="py-20 sm:py-28 relative overflow-hidden bg-midnight-950/60 border-t border-white/5">
@@ -28,7 +56,7 @@ export default function NumerologySection() {
         </div>
 
         {/* 2-Column Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start mb-12">
           {/* Left Column: Booking Card & Key Calculations */}
           <div className="lg:col-span-5 order-2 lg:order-1 space-y-6">
             <div className="card-celestial p-6 sm:p-8 rounded-2xl relative border-gold-500/30 shadow-card">
@@ -38,7 +66,7 @@ export default function NumerologySection() {
                   Numerology Consultation
                 </h3>
                 <p className="text-xs text-ivory-muted mt-1">
-                  Name, birth date & life path decoding
+                  Personalized analysis by Smita Singh
                 </p>
               </div>
 
@@ -46,11 +74,11 @@ export default function NumerologySection() {
               <div className="grid grid-cols-3 gap-2.5 mb-6 text-center">
                 <div className="p-3 rounded-xl bg-midnight-950/70 border border-white/5">
                   <span className="text-xs font-semibold text-gold-300 block">Mulank</span>
-                  <span className="text-[10px] text-ivory-muted">Birth Core</span>
+                  <span className="text-[10px] text-ivory-muted">Birth Core (1-31)</span>
                 </div>
                 <div className="p-3 rounded-xl bg-midnight-950/70 border border-white/5">
                   <span className="text-xs font-semibold text-gold-300 block">Bhagyank</span>
-                  <span className="text-[10px] text-ivory-muted">Destiny Path</span>
+                  <span className="text-[10px] text-ivory-muted">Destiny (DD/MM/YYYY)</span>
                 </div>
                 <div className="p-3 rounded-xl bg-midnight-950/70 border border-white/5">
                   <span className="text-xs font-semibold text-gold-300 block">Namank</span>
@@ -58,25 +86,25 @@ export default function NumerologySection() {
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-xl bg-midnight-950/60 border border-white/5 space-y-2 mb-8 text-xs">
-                <span className="font-medium text-gold-300 block">What you will share:</span>
+              <div className="p-3.5 rounded-xl bg-midnight-950/60 border border-white/5 space-y-2 mb-6 text-xs">
+                <span className="font-medium text-gold-300 block">What you explore in a session:</span>
                 <ul className="space-y-1.5 text-ivory-muted">
                   <li className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-gold-400" />
-                    Full legal name & commonly used signature name
+                    Full legal name & commonly used signature acoustics
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-gold-400" />
-                    Complete date of birth
+                    Complete date of birth and core Life Path resonance
                   </li>
                   <li className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-gold-400" />
-                    Key goals (Name correction, brand name, career timing)
+                    Personal Year cycles (Varshik Ank) for career & business timing
                   </li>
                 </ul>
               </div>
 
-              {/* Direct WhatsApp CTA Button */}
+              {/* Action Buttons */}
               <div className="space-y-3">
                 <Button
                   href={service.whatsAppLink}
@@ -89,9 +117,18 @@ export default function NumerologySection() {
                 >
                   {service.ctaLabel}
                 </Button>
-                <p className="text-[11px] text-center text-ivory-muted">
-                  Pre-filled message: "Hello Smitaa, I’m interested in booking a Numerology session..."
-                </p>
+
+                <Button
+                  href="#calculator"
+                  onClick={scrollToCalculator}
+                  variant="secondary"
+                  size="md"
+                  icon={Calculator}
+                  className="w-full text-xs"
+                  ariaLabel="Scroll down to calculate your numbers interactively"
+                >
+                  Calculate Your Core Numbers Live
+                </Button>
               </div>
             </div>
           </div>
@@ -101,7 +138,7 @@ export default function NumerologySection() {
             <div className="card-celestial p-6 sm:p-8 rounded-2xl space-y-6">
               <div>
                 <h3 className="font-cinzel text-lg font-semibold text-ivory-light mb-3">
-                  The Numerological Lens
+                  The Numerological Framework
                 </h3>
                 <p className="text-sm sm:text-base text-ivory-soft/90 leading-relaxed">
                   {service.philosophy}
@@ -111,7 +148,7 @@ export default function NumerologySection() {
               <div className="pt-4 border-t border-white/10">
                 <h4 className="text-xs uppercase tracking-wider text-gold-300 font-semibold mb-4 flex items-center gap-2">
                   <Layers className="w-4 h-4 text-gold-400" />
-                  What the Session Explores
+                  What the Consultation Explores
                 </h4>
                 <ul className="space-y-3">
                   {service.sessionIncludes.map((item, idx) => (
@@ -141,6 +178,39 @@ export default function NumerologySection() {
                 {service.ethicalNote}
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Quick Transition Banner to Interactive Calculator & Classes */}
+        <div className="p-4 rounded-2xl bg-midnight-900/50 border border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+          <div className="space-y-1">
+            <h4 className="font-cinzel text-sm font-bold text-ivory-light flex items-center justify-center sm:justify-start gap-2">
+              <Sparkles className="w-4 h-4 text-gold-400" />
+              Ready to Calculate Your Own Numbers?
+            </h4>
+            <p className="text-xs text-ivory-muted">
+              Use our transparent calculator below for Mulank, Bhagyank, and Namank reduction.
+            </p>
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
+            <Button
+              href="#calculator"
+              onClick={scrollToCalculator}
+              variant="outline"
+              size="sm"
+              icon={Calculator}
+            >
+              Core Calculator
+            </Button>
+            <Button
+              href="#classes"
+              onClick={scrollToClasses}
+              variant="ghost"
+              size="sm"
+              icon={GraduationCap}
+            >
+              Class Demos
+            </Button>
           </div>
         </div>
       </div>

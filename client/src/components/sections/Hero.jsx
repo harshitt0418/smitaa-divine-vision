@@ -1,5 +1,5 @@
 import React from "react";
-import { Sparkles, ArrowDown, BookOpen, Compass, ShieldCheck, HeartHandshake } from "lucide-react";
+import { Sparkles, ArrowDown, BookOpen, Compass, ShieldCheck, HeartHandshake, Award } from "lucide-react";
 import Button from "../ui/Button";
 import Badge from "../ui/Badge";
 import { SITE_CONFIG } from "../../data/siteContent";
@@ -21,18 +21,34 @@ export default function Hero() {
     }
   };
 
+  const scrollToRecognition = (e) => {
+    e.preventDefault();
+    const target = document.querySelector("#recognition");
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
-    <section id="home" className="relative pt-32 pb-20 sm:pt-40 sm:pb-28 lg:pt-48 lg:pb-36 overflow-hidden">
+    <section id="home" className="relative pt-32 pb-20 sm:pt-40 sm:pb-28 lg:pt-44 lg:pb-32 overflow-hidden">
       {/* Restrained celestial orbits & ambient elements */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[800px] h-[600px] sm:h-[800px] celestial-orbit pointer-events-none opacity-20 animate-spin-very-slow" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[500px] h-[400px] sm:h-[500px] celestial-orbit pointer-events-none opacity-15" />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-        {/* Intro Badge */}
-        <div className="flex justify-center mb-6">
+        {/* Intro Badge & Conclave Tag */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
           <Badge variant="gold" size="md" icon={Sparkles}>
-            {SITE_CONFIG.brandName} &bull; {SITE_CONFIG.alternateBrandName}
+            {SITE_CONFIG.brandName} &bull; {SITE_CONFIG.practitionerName}
           </Badge>
+          <a
+            href="#recognition"
+            onClick={scrollToRecognition}
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-midnight-900 border border-gold-500/30 text-gold-300 hover:text-white hover:border-gold-400 text-xs transition-colors"
+          >
+            <Award className="w-3.5 h-3.5 text-gold-400" />
+            <span>Featured at Navbharat Astro Mahasangam</span>
+          </a>
         </div>
 
         {/* Emotionally resonant headline */}
@@ -46,11 +62,11 @@ export default function Hero() {
 
         {/* Grounded supporting copy */}
         <p className="max-w-2xl mx-auto text-base sm:text-lg text-ivory-soft/90 font-light leading-relaxed mb-10">
-          When life presents pivotal choices in career, relationships, and living spaces, guidance should be clear, grounded, and empowering. Through Vedic Astrology, Numerology, and Vastu Shastra, Smitaa provides reflective frameworks that honor your agency—without fatalistic fear or superficial promises.
+          When life presents pivotal choices in career, relationships, and living spaces, guidance should be clear, grounded, and empowering. Guided by <strong>Smita Singh</strong> (MBA, corporate executive transition), Smitaa Divine Vision provides reflective Vedic Astrology, Numerology, and Vastu frameworks that honor your agency—without fatalistic fear or superficial promises.
         </p>
 
         {/* Primary and Secondary Action CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5 mb-16">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5 mb-14">
           <Button
             href="#astrology"
             onClick={scrollToConsultations}
@@ -59,18 +75,29 @@ export default function Hero() {
             icon={Compass}
             ariaLabel="Explore the consultation disciplines"
           >
-            Explore the Consultations
+            Explore Consultations
+          </Button>
+
+          <Button
+            href="#recognition"
+            onClick={scrollToRecognition}
+            variant="secondary"
+            size="lg"
+            icon={Award}
+            ariaLabel="View media recognition and events"
+          >
+            Media & Recognition
           </Button>
 
           <Button
             href="#book"
             onClick={scrollToBook}
-            variant="secondary"
+            variant="outline"
             size="lg"
             icon={BookOpen}
             ariaLabel="Discover the featured book"
           >
-            Discover the Book
+            The Book
           </Button>
         </div>
 
@@ -102,14 +129,14 @@ export default function Hero() {
         </div>
 
         {/* Soft scroll prompt */}
-        <div className="mt-14 flex justify-center">
+        <div className="mt-12 flex justify-center">
           <a
-            href="#astrology"
-            onClick={scrollToConsultations}
+            href="#recognition"
+            onClick={scrollToRecognition}
             className="group flex flex-col items-center gap-1.5 text-xs text-ivory-muted hover:text-gold-300 transition-colors focus:outline-none"
-            aria-label="Scroll down to consultations"
+            aria-label="Scroll down to recognition section"
           >
-            <span className="tracking-widest uppercase text-[10px]">Explore Offerings</span>
+            <span className="tracking-widest uppercase text-[10px]">Explore Practise</span>
             <ArrowDown className="w-4 h-4 text-gold-400 group-hover:translate-y-1 transition-transform" />
           </a>
         </div>

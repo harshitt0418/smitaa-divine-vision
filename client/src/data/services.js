@@ -17,7 +17,7 @@ export const SERVICES = [
     whoIsItFor: "Individuals standing at major life crossroads—considering career transitions, evaluating business timing, navigating personal relationships, or seeking self-understanding through a classical reflective tradition.",
     ethicalNote: "Sessions offer interpretive insight and reflective counsel. We do not claim fatalistic certainty, unalterable predictions, or guaranteed external outcomes.",
     ctaLabel: "Book Astrology Consultation",
-    whatsAppMessage: "Hello Smitaa, I’m interested in booking an Astrology consultation. Please share the available timings and what details you need from me.",
+    whatsAppMessage: "Hello Smita Singh, I’m interested in booking an Astrology consultation. Please share the available timings and what details you need from me.",
     get whatsAppLink() {
       return getWhatsAppLink(this.whatsAppMessage);
     },
@@ -42,7 +42,7 @@ export const SERVICES = [
     whoIsItFor: "Seekers wanting a clear, structured analytical perspective on their personal tendencies, professionals exploring name or brand optimization, and anyone curious about the numerical cycles governing their current chapter of life.",
     ethicalNote: "Numerology is an interpretive symbolic discipline that facilitates self-reflection. We do not claim scientific proof or promise automatic financial or personal results.",
     ctaLabel: "Book Numerology Session",
-    whatsAppMessage: "Hello Smitaa, I’m interested in booking a Numerology session. Please share the available timings and what details you need from me.",
+    whatsAppMessage: "Hello Smita Singh, I’m interested in booking a Numerology session. Please share the available timings and what details you need from me.",
     get whatsAppLink() {
       return getWhatsAppLink(this.whatsAppMessage);
     },
@@ -67,7 +67,7 @@ export const SERVICES = [
     whoIsItFor: "Homeowners, tenants, and business leaders seeking a serene, balanced environment, whether moving into a new property, renovating, or resolving persistent feelings of restlessness in a current layout.",
     ethicalNote: "Our Vastu consultations are grounded, sensible, and architectural. We strictly avoid fear-based superstitions, costly demolition mandates, or promises of guaranteed instant wealth.",
     ctaLabel: "Book Vastu Consultation",
-    whatsAppMessage: "Hello Smitaa, I’m interested in booking a Vastu consultation. Please share the available timings and what details you need from me.",
+    whatsAppMessage: "Hello Smita Singh, I’m interested in booking a Vastu consultation. Please share the available timings and what details you need from me.",
     get whatsAppLink() {
       return getWhatsAppLink(this.whatsAppMessage);
     },

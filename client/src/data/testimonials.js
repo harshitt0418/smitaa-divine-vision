@@ -1,8 +1,19 @@
 /**
  * Verbatim, authentic reviews transcribed strictly from the supplied screenshot assets.
- * No fabricated ratings, names, or quotes.
+ * Preserves the reviewer's original wording without alteration or fabrication.
  */
 export const VERIFIED_REVIEWS = [
+  {
+    id: "review-rajiv-kumar",
+    quote: "Yes Mam, your session was interesting ,entertaining and educational. The way you teach is really good.",
+    reviewerName: "Rajiv Kumar",
+    platform: "WhatsApp feedback",
+    category: "Consultations",
+    rating: 5,
+    highlight: "Interesting, entertaining and educational session",
+    screenshot: "/assets/reviews/review-rajiv-kumar-whatsapp.jpg",
+    verifiedDate: "Verified Student Feedback"
+  },
   {
     id: "review-1",
     quote: "This was the most useful thing for me right now. I don't know how to explain it but the overwhelm and anxiety just whooped out of me in these 30 mins. Always always grateful for your sensitivity and willingness to work for everyone around you. 🙏✨✨",
@@ -22,16 +33,6 @@ export const VERIFIED_REVIEWS = [
     rating: 5,
     highlight: "Transformative, engaging, and unique teaching style",
     screenshot: "/assets/reviews/review-course-2.jpg"
-  },
-  {
-    id: "review-3",
-    quote: "Yes Mam, your session was interesting ,entertaining and educational. The way you teach is really good.",
-    reviewerName: "Rajiv Kumar",
-    platform: "Client feedback",
-    category: "Consultations",
-    rating: 5,
-    highlight: "Interesting, entertaining and educational session",
-    screenshot: "/assets/reviews/review-whatsapp-2.jpg"
   },
   {
     id: "review-4",

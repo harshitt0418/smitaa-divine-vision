@@ -1,5 +1,5 @@
 import React from "react";
-import { MessageCircle, ExternalLink, Sparkles, BookOpen, Heart } from "lucide-react";
+import { MessageCircle, ExternalLink, Sparkles, BookOpen, Heart, Award, GraduationCap, Calculator } from "lucide-react";
 import { InstagramIcon, YoutubeIcon, FacebookIcon } from "../ui/SocialIcons";
 import { SITE_CONFIG, getWhatsAppLink } from "../../data/siteContent";
 import { SERVICES } from "../../data/services";
@@ -22,19 +22,28 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8 pb-12 border-b border-white/10">
           {/* Col 1: Brand & Bio Summary */}
-          <div className="space-y-4">
+          <div className="space-y-4 text-left">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full border border-gold-500/40 bg-midnight-900 flex items-center justify-center">
-                <span className="font-cinzel text-gold-400 font-bold text-xs">SV</span>
+              <div className="w-10 h-10 rounded-full border border-gold-500/40 bg-black flex items-center justify-center overflow-hidden shrink-0">
+                <img
+                  src={SITE_CONFIG.brandEmblem}
+                  alt={SITE_CONFIG.brandName}
+                  className="w-full h-full object-cover"
+                />
               </div>
-              <span className="font-cinzel font-bold text-lg text-ivory-light">
-                {SITE_CONFIG.brandName}
-              </span>
+              <div className="flex flex-col">
+                <span className="font-cinzel font-bold text-lg text-ivory-light">
+                  {SITE_CONFIG.brandName}
+                </span>
+                <span className="text-[10px] text-gold-400 font-medium">
+                  {SITE_CONFIG.practitionerName} &bull; {SITE_CONFIG.alternateBrandName}
+                </span>
+              </div>
             </div>
             <p className="text-xs sm:text-sm text-ivory-muted leading-relaxed">
-              Refined, client-centered consultations blending the time-tested wisdom of Vedic Astrology, Numerology, and Vastu Shastra with modern practical clarity.
+              Refined, client-centered consultations blending the time-tested wisdom of Vedic Astrology, Numerology, and Vastu Shastra with corporate executive clarity. Associated with prominent conclaves including Navbharat Astro Mahasangam.
             </p>
-            <p className="text-xs text-gold-400/80 font-medium tracking-wide">
+            <p className="text-xs text-gold-400/90 font-medium tracking-wide">
               Brand Identity: {SITE_CONFIG.alternateBrandName}
             </p>
             {/* Social channels */}
@@ -44,7 +53,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-full bg-midnight-850 border border-white/10 flex items-center justify-center text-ivory-soft hover:text-gold-300 hover:border-gold-500/40 hover:bg-midnight-800 transition-colors"
-                aria-label="Follow Smitaa on Instagram"
+                aria-label="Follow Smita Singh on Instagram"
               >
                 <InstagramIcon className="w-4 h-4" />
               </a>
@@ -70,7 +79,7 @@ export default function Footer() {
           </div>
 
           {/* Col 2: Consultation Options via WhatsApp */}
-          <div className="space-y-4">
+          <div className="space-y-4 text-left">
             <h4 className="font-cinzel text-sm font-semibold text-gold-300 uppercase tracking-widest">
               Direct Consultations
             </h4>
@@ -88,9 +97,29 @@ export default function Footer() {
                   </a>
                 </li>
               ))}
+              <li>
+                <a
+                  href="#classes"
+                  onClick={(e) => handleScrollTo(e, "#classes")}
+                  className="inline-flex items-center gap-2 text-ivory-muted hover:text-gold-300 transition-colors group"
+                >
+                  <GraduationCap className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                  <span>Numerology Classes Demo</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#calculator"
+                  onClick={(e) => handleScrollTo(e, "#calculator")}
+                  className="inline-flex items-center gap-2 text-ivory-muted hover:text-gold-300 transition-colors group"
+                >
+                  <Calculator className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                  <span>Discover Your Core Numbers</span>
+                </a>
+              </li>
               <li className="pt-2">
                 <a
-                  href={getWhatsAppLink("Hello Smitaa, I have a general consultation question.")}
+                  href={getWhatsAppLink("Hello Smita Singh, I have a general consultation question.")}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs text-gold-400/90 hover:underline flex items-center gap-1"
@@ -102,7 +131,7 @@ export default function Footer() {
           </div>
 
           {/* Col 3: The Featured Book */}
-          <div className="space-y-4">
+          <div className="space-y-4 text-left">
             <h4 className="font-cinzel text-sm font-semibold text-gold-300 uppercase tracking-widest">
               Featured Publication
             </h4>
@@ -132,14 +161,19 @@ export default function Footer() {
           </div>
 
           {/* Col 4: Quick Navigation & Ethical Note */}
-          <div className="space-y-4">
+          <div className="space-y-4 text-left">
             <h4 className="font-cinzel text-sm font-semibold text-gold-300 uppercase tracking-widest">
-              Navigation & Guide
+              Site Navigation
             </h4>
             <ul className="grid grid-cols-2 gap-2 text-xs text-ivory-muted">
               <li>
                 <a href="#home" onClick={(e) => handleScrollTo(e, "#home")} className="hover:text-gold-300 transition-colors">
                   Home
+                </a>
+              </li>
+              <li>
+                <a href="#recognition" onClick={(e) => handleScrollTo(e, "#recognition")} className="hover:text-gold-300 transition-colors">
+                  Recognition
                 </a>
               </li>
               <li>
@@ -150,6 +184,16 @@ export default function Footer() {
               <li>
                 <a href="#numerology" onClick={(e) => handleScrollTo(e, "#numerology")} className="hover:text-gold-300 transition-colors">
                   Numerology
+                </a>
+              </li>
+              <li>
+                <a href="#calculator" onClick={(e) => handleScrollTo(e, "#calculator")} className="hover:text-gold-300 transition-colors">
+                  Core Numbers
+                </a>
+              </li>
+              <li>
+                <a href="#classes" onClick={(e) => handleScrollTo(e, "#classes")} className="hover:text-gold-300 transition-colors">
+                  Classes Demo
                 </a>
               </li>
               <li>
@@ -169,7 +213,7 @@ export default function Footer() {
               </li>
               <li>
                 <a href="#about" onClick={(e) => handleScrollTo(e, "#about")} className="hover:text-gold-300 transition-colors">
-                  About Smitaa
+                  About Smita
                 </a>
               </li>
             </ul>
@@ -183,9 +227,9 @@ export default function Footer() {
 
         {/* Bottom copyright & disclaimer */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-ivory-muted">
-          <p>© {currentYear} {SITE_CONFIG.brandName} ({SITE_CONFIG.alternateBrandName}). All rights reserved.</p>
+          <p>© {currentYear} {SITE_CONFIG.brandName} ({SITE_CONFIG.alternateBrandName}) &bull; Smita Singh. All rights reserved.</p>
           <p className="text-[11px] text-ivory-muted/70 text-center sm:text-right">
-            Designed for thoughtful spiritual inquiry &bull; Privacy protected &bull; Crafted with care
+            Associated with Navbharat Astro Mahasangam &bull; Privacy protected &bull; Grounded Guidance
           </p>
         </div>
       </div>

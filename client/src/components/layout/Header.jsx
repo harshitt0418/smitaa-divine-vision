@@ -17,8 +17,11 @@ export default function Header({ onOpenBookingModal }) {
 
   const navLinks = [
     { label: "Home", href: "#home" },
+    { label: "Recognition", href: "#recognition" },
     { label: "Astrology", href: "#astrology" },
     { label: "Numerology", href: "#numerology" },
+    { label: "Core Numbers", href: "#calculator" },
+    { label: "Classes Demo", href: "#classes" },
     { label: "Vastu", href: "#vastu" },
     { label: "The Book", href: "#book" },
     { label: "Reviews", href: "#reviews" },
@@ -35,48 +38,51 @@ export default function Header({ onOpenBookingModal }) {
   };
 
   const generalWhatsAppBooking = getWhatsAppLink(
-    "Hello Smitaa, I would like to inquire about booking a consultation session with you. Please share available timings and what details you need from me."
+    "Hello Smita Singh, I would like to inquire about booking a consultation session with you. Please share available timings and what details you need from me."
   );
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         isScrolled
-          ? "bg-midnight-950/85 backdrop-blur-md border-b border-gold-500/15 py-3 shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
-          : "bg-transparent py-5 border-b border-white/5"
+          ? "bg-midnight-950/90 backdrop-blur-md border-b border-gold-500/15 py-3 shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
+          : "bg-transparent py-4 sm:py-5 border-b border-white/5"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
-          {/* Logo & Brand Mark */}
+        <div className="flex items-center justify-between gap-4">
+          {/* Logo & Brand Mark with Authentic Celestial Emblem */}
           <a
             href="#home"
             onClick={(e) => handleNavLinkClick(e, "#home")}
-            className="group flex items-center gap-3 focus:outline-none"
+            className="group flex items-center gap-3 focus:outline-none shrink-0"
             aria-label={`${SITE_CONFIG.brandName} - Return to top`}
           >
-            <div className="relative w-10 h-10 rounded-full border border-gold-500/40 bg-midnight-900 flex items-center justify-center overflow-hidden group-hover:border-gold-400 transition-colors shadow-[0_0_15px_rgba(212,175,55,0.15)]">
-              <span className="font-cinzel text-gold-400 font-bold text-sm tracking-wider">SV</span>
-              <div className="absolute inset-0 bg-radial-radial opacity-30 group-hover:opacity-60 transition-opacity" />
+            <div className="relative w-10 h-10 rounded-full border border-gold-500/40 bg-black flex items-center justify-center overflow-hidden group-hover:border-gold-400 transition-colors shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+              <img
+                src={SITE_CONFIG.brandEmblem}
+                alt={SITE_CONFIG.brandName}
+                className="w-full h-full object-cover"
+              />
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col text-left">
               <span className="font-cinzel font-bold text-base sm:text-lg tracking-wide text-ivory-light group-hover:text-gold-300 transition-colors">
                 {SITE_CONFIG.brandName}
               </span>
-              <span className="text-[10px] sm:text-xs text-gold-400/80 tracking-widest uppercase font-medium">
-                {SITE_CONFIG.alternateBrandName} • Spiritual Guidance
+              <span className="text-[10px] sm:text-xs text-gold-400/90 tracking-widest uppercase font-medium">
+                {SITE_CONFIG.practitionerName} &bull; {SITE_CONFIG.alternateBrandName}
               </span>
             </div>
           </a>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-7" aria-label="Main Navigation">
+          <nav className="hidden xl:flex items-center gap-5 2xl:gap-6" aria-label="Main Navigation">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
                 onClick={(e) => handleNavLinkClick(e, link.href)}
-                className="text-xs uppercase tracking-widest text-ivory-soft hover:text-gold-300 transition-colors py-1 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-gold-500 hover:after:w-full after:transition-all after:duration-300"
+                className="text-xs uppercase tracking-wider text-ivory-soft hover:text-gold-300 transition-colors py-1 relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-gold-500 hover:after:w-full after:transition-all after:duration-300"
               >
                 {link.label}
               </a>
@@ -84,7 +90,7 @@ export default function Header({ onOpenBookingModal }) {
           </nav>
 
           {/* Header Action Button (Desktop) */}
-          <div className="hidden sm:flex items-center gap-3">
+          <div className="hidden sm:flex items-center gap-3 shrink-0">
             <Button
               href={generalWhatsAppBooking}
               external
@@ -100,7 +106,7 @@ export default function Header({ onOpenBookingModal }) {
           {/* Mobile Hamburger Button */}
           <button
             type="button"
-            className="lg:hidden p-2 rounded-lg text-ivory hover:text-gold-300 hover:bg-white/5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
+            className="xl:hidden p-2 rounded-lg text-ivory hover:text-gold-300 hover:bg-white/5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-expanded={mobileMenuOpen}
             aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
@@ -113,19 +119,20 @@ export default function Header({ onOpenBookingModal }) {
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div
-          className="lg:hidden fixed inset-x-0 top-[65px] bg-midnight-950/95 backdrop-blur-xl border-b border-gold-500/20 px-6 py-6 shadow-2xl transition-all animate-in slide-in-from-top-4 duration-200"
+          className="xl:hidden fixed inset-x-0 top-[65px] bg-midnight-950/98 backdrop-blur-2xl border-b border-gold-500/20 px-6 py-6 shadow-2xl transition-all animate-in slide-in-from-top-4 duration-200 max-h-[calc(100vh-65px)] overflow-y-auto"
           role="dialog"
           aria-label="Mobile Navigation"
         >
-          <nav className="flex flex-col space-y-4">
+          <nav className="flex flex-col space-y-3">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
                 onClick={(e) => handleNavLinkClick(e, link.href)}
-                className="text-base font-cinzel text-ivory-light hover:text-gold-300 py-2 border-b border-white/5 transition-colors"
+                className="text-sm font-cinzel text-ivory-light hover:text-gold-300 py-2 border-b border-white/5 transition-colors flex items-center justify-between"
               >
-                {link.label}
+                <span>{link.label}</span>
+                <span className="text-[10px] text-gold-500/50">&rarr;</span>
               </a>
             ))}
             <div className="pt-4 flex flex-col gap-3">

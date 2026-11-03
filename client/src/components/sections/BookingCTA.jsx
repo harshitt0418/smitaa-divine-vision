@@ -66,7 +66,7 @@ export default function BookingCTA() {
             Begin with a Thoughtful Conversation
           </h2>
           <p className="font-cormorant italic text-lg sm:text-xl text-gold-300 max-w-2xl mx-auto">
-            Choose your area of focus below to start a direct, confidential WhatsApp conversation with Smitaa.
+            Choose your area of focus below to start a direct, confidential WhatsApp conversation with Smita Singh.
           </p>
         </div>
 
@@ -167,7 +167,7 @@ export default function BookingCTA() {
               Inquiry Received
             </h4>
             <p className="text-xs text-ivory-muted max-w-sm mx-auto">
-              Thank you! Your message has been safely received. Smitaa will review your request and get in touch with available schedule times.
+              Thank you! Your message has been safely received. Smita Singh will review your request and get in touch with available schedule times.
             </p>
           </div>
         ) : (
