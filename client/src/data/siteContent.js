@@ -11,6 +11,7 @@ export const SITE_CONFIG = {
   whatsappNumber: "919119860551", // E.164 formatted for wa.me
   email: "contact@smitaadivinevision.com",
   brandEmblem: "/assets/brand-emblem.jpg",
+  officialLogo: "/assets/official-logo-dv.jpg",
   socialLinks: {
     facebook: "https://www.facebook.com/share/1Da48RwW55/",
     instagram: "https://www.instagram.com/smitaa.divinevision?utm_source=qr&igsi=eWZ3dWw1dWttNDRr",
