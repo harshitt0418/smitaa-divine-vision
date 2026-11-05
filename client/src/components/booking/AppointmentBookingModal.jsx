@@ -1,24 +1,16 @@
 import React, { useState, useMemo, useEffect } from "react";
 import {
-  Calendar,
   Clock,
   User,
   Phone,
   Mail,
-  ShieldCheck,
   CheckCircle2,
   AlertCircle,
   ArrowRight,
   ArrowLeft,
-  Sparkles,
-  ExternalLink,
   MessageCircle,
-  Lock,
   CreditCard,
-  QrCode,
   RotateCcw,
-  Wallet,
-  Landmark,
   Check,
   Loader2,
 } from "lucide-react";
@@ -113,7 +105,6 @@ export default function AppointmentBookingModal({
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [fallbackMode, setFallbackMode] = useState(null);
-  const [manualPaymentId, setManualPaymentId] = useState("");
   const [verifiedData, setVerifiedData] = useState(null);
 
   useEffect(() => {
@@ -201,7 +192,6 @@ export default function AppointmentBookingModal({
     setErrorMessage("");
     setPaymentStatus("idle");
     setFallbackMode(null);
-    setManualPaymentId("");
     setVerifiedData(null);
     onClose();
   };
@@ -255,8 +245,10 @@ export default function AppointmentBookingModal({
         notes: clientNotes.trim(),
       });
 
-      // If Razorpay keys are not yet configured in server environment, enter manual verification mode
-      if (orderData.keyMissing || orderData.mode === "manual_link_fallback") {
+      const effectiveKeyId = orderData.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID;
+
+      // If Razorpay keys are not yet configured in server environment, show direct WhatsApp booking
+      if (!effectiveKeyId) {
         setFallbackMode(orderData);
         setIsProcessing(false);
         return;
@@ -268,15 +260,15 @@ export default function AppointmentBookingModal({
         throw new Error("Unable to load Razorpay payment SDK. Please check your internet connection.");
       }
 
-      // 3. Configure Razorpay modal with fixed-amount QR code priority
+      // 3. Configure Razorpay modal with fixed amount
       const options = {
-        key: orderData.keyId,
-        amount: orderData.amount, // Exact fixed amount in paise
+        key: effectiveKeyId,
+        amount: orderData.amount || Math.round(selectedService.price * 100), // Exact fixed amount in paise
         currency: orderData.currency || "INR",
         name: "Smitaa Divine Vision",
-        description: `${selectedService.name} — Fixed Amount: ${selectedService.formattedPrice}`,
+        description: `${selectedService.name} — Fixed Fee: ${selectedService.formattedPrice}`,
         image: "/assets/official-logo-dv.jpg",
-        order_id: orderData.orderId,
+        order_id: orderData.orderId || undefined,
         prefill: {
           name: clientName,
           contact: clientPhone,
@@ -285,47 +277,14 @@ export default function AppointmentBookingModal({
         theme: {
           color: "#D4AF37",
         },
-        config: {
-          display: {
-            blocks: {
-              upi: {
-                name: "Pay with Fixed Amount UPI QR Code",
-                instruments: [
-                  {
-                    method: "upi",
-                    flows: ["qr", "intent", "collect"],
-                  },
-                ],
-              },
-              other: {
-                name: "Cards & Netbanking",
-                instruments: [
-                  {
-                    method: "card",
-                  },
-                  {
-                    method: "netbanking",
-                  },
-                ],
-              },
-            },
-            sequence: ["block.upi", "block.other"],
-            preferences: {
-              show_default_blocks: true,
-            },
-          },
-        },
         modal: {
           confirm_close: true,
           ondismiss: () => {
             setIsProcessing(false);
             setPaymentStatus("cancelled");
-            setErrorMessage(
-              "Payment window was closed. Your selected service, date, time slot, and booking details are safely preserved. You can click 'Retry Payment' below to proceed."
-            );
           },
         },
-        // 4. Verification callback: Server-side HMAC SHA-256 verification
+        // 4. Verification callback: Server-side HMAC SHA-256 verification and automatic WhatsApp redirection
         handler: async function (response) {
           try {
             setIsProcessing(true);
@@ -340,14 +299,21 @@ export default function AppointmentBookingModal({
               setPaymentStatus("verified");
               setVerifiedData(verifyResult);
               setStep(4);
+              // Automatic instant redirect straight to WhatsApp
+              if (verifyResult.whatsappUrl) {
+                window.location.href = verifyResult.whatsappUrl;
+              }
             } else {
               setPaymentStatus("failed");
               setErrorMessage("Payment verification failed. Please contact Smita Singh with your payment reference.");
             }
           } catch (verifyErr) {
             console.error("Verification error:", verifyErr);
-            setPaymentStatus("failed");
-            setErrorMessage(verifyErr.message || "Cryptographic payment verification failed on server.");
+            // Fallback direct WhatsApp redirect with payment ID
+            const fallbackWhatsappText = encodeURIComponent(
+              `Namaste Smita Singh,\nI have completed payment of ${selectedService.formattedPrice} for ${selectedService.name}:\n• Payment ID: ${response.razorpay_payment_id}\n• Name: ${clientName}\n• Appointment: ${formatReadableDate(appointmentDate)} at ${appointmentTime}`
+            );
+            window.location.href = `https://wa.me/919119860551?text=${fallbackWhatsappText}`;
           } finally {
             setIsProcessing(false);
           }
@@ -370,35 +336,6 @@ export default function AppointmentBookingModal({
       console.error("Payment flow error:", err);
       setPaymentStatus("failed");
       setErrorMessage(err.message || "Failed to initiate payment. Please try again.");
-      setIsProcessing(false);
-    }
-  };
-
-  // Verify direct payment if completed via Razorpay link
-  const handleVerifyManualPayment = async () => {
-    if (!manualPaymentId.trim()) {
-      setErrorMessage("Please enter your Razorpay Payment ID (e.g. pay_XXXXX) to verify.");
-      return;
-    }
-
-    setIsProcessing(true);
-    setErrorMessage("");
-
-    try {
-      const verifyResult = await verifyPayment({
-        razorpay_payment_id: manualPaymentId.trim(),
-        bookingReference: fallbackMode?.bookingReference,
-      });
-
-      if (verifyResult.verified && verifyResult.success) {
-        setVerifiedData(verifyResult);
-        setStep(4);
-      } else {
-        setErrorMessage("Payment verification could not be confirmed. Please check the Payment ID.");
-      }
-    } catch (err) {
-      setErrorMessage(err.message || "Payment verification failed. Please ensure the payment is captured.");
-    } finally {
       setIsProcessing(false);
     }
   };
@@ -813,53 +750,17 @@ export default function AppointmentBookingModal({
             </div>
           </div>
 
-          {/* Prominent Fixed-Amount QR Callout */}
-          <div className="p-3.5 rounded-xl bg-gold-500/10 border border-gold-500/35 space-y-1.5 text-xs text-gold-300">
-            <div className="flex items-center gap-2 font-semibold text-gold-200">
-              <QrCode className="w-4 h-4 text-gold-400 shrink-0" />
-              <span>Razorpay Fixed-Amount UPI QR Code: {selectedService.formattedPrice}</span>
-            </div>
-            <p className="text-[11px] text-ivory-soft/90 leading-relaxed">
-              Razorpay will display a dynamic UPI QR code preloaded with the exact fixed amount of <strong>{selectedService.formattedPrice}</strong>. You will be redirected to WhatsApp with your confirmed booking <strong>strictly after payment verification</strong>.
-            </p>
-          </div>
-
-          {/* Supported Payment Methods Breakdown */}
-          <div className="p-3.5 rounded-xl bg-midnight-950/70 border border-white/10 space-y-2">
-            <span className="text-[10px] uppercase font-cinzel font-bold tracking-wider text-ivory-muted block">
-              Supported Payment Methods (Razorpay Official Gateway)
-            </span>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] text-ivory-soft">
-              <div className="flex items-center gap-1.5 p-2 rounded-lg bg-white/5 border border-white/5">
-                <QrCode className="w-3.5 h-3.5 text-gold-400 shrink-0" />
-                <span>UPI & QR</span>
-              </div>
-              <div className="flex items-center gap-1.5 p-2 rounded-lg bg-white/5 border border-white/5">
-                <CreditCard className="w-3.5 h-3.5 text-gold-400 shrink-0" />
-                <span>Cards</span>
-              </div>
-              <div className="flex items-center gap-1.5 p-2 rounded-lg bg-white/5 border border-white/5">
-                <Landmark className="w-3.5 h-3.5 text-gold-400 shrink-0" />
-                <span>Net Banking</span>
-              </div>
-              <div className="flex items-center gap-1.5 p-2 rounded-lg bg-white/5 border border-white/5">
-                <Wallet className="w-3.5 h-3.5 text-gold-400 shrink-0" />
-                <span>Wallets</span>
-              </div>
-            </div>
-          </div>
-
           {/* Retry Callout if payment failed or was dismissed */}
           {(paymentStatus === "cancelled" || paymentStatus === "failed") && (
-            <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-500/40 text-xs text-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-in fade-in">
+            <div className="p-3.5 rounded-xl bg-amber-950/30 border border-amber-500/40 text-xs text-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-in fade-in">
               <div className="flex items-start gap-2">
                 <RotateCcw className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                 <div>
                   <span className="font-semibold text-amber-300 block">
-                    {paymentStatus === "cancelled" ? "Checkout Window Closed" : "Payment Incomplete"}
+                    {paymentStatus === "cancelled" ? "Payment Window Closed" : "Payment Incomplete"}
                   </span>
                   <p className="text-[11px] text-ivory-soft/90 mt-0.5">
-                    Your appointment slot ({formatReadableDate(appointmentDate)} at {appointmentTime}) and client details are safely retained. You can retry paying now without re-entering your information.
+                    Your appointment slot ({formatReadableDate(appointmentDate)} at {appointmentTime}) and details are preserved.
                   </p>
                 </div>
               </div>
@@ -872,80 +773,43 @@ export default function AppointmentBookingModal({
                 disabled={isProcessing}
                 className="shrink-0 text-xs font-bold shadow-gold-glow"
               >
-                Retry Payment
+                Retry
               </Button>
             </div>
           )}
 
-          {/* Fallback Notice if API keys are not yet configured on server */}
+          {/* Missing Keys Notice if keys are not in environment yet */}
           {fallbackMode && (
-            <div className="p-4 rounded-xl bg-gold-500/10 border border-gold-500/40 text-xs space-y-3">
-              <div className="flex items-start gap-2">
+            <div className="p-4 rounded-xl bg-gold-500/10 border border-gold-500/30 text-xs space-y-3">
+              <div className="flex items-start gap-2.5">
                 <AlertCircle className="w-4 h-4 text-gold-400 shrink-0 mt-0.5" />
-                <div>
+                <div className="space-y-1">
                   <span className="font-semibold text-gold-200 block">
-                    Razorpay Gateway Link
+                    Razorpay Account Connection
                   </span>
-                  <p className="text-ivory-muted text-[11px] mt-0.5">
-                    Your appointment reference is:{" "}
-                    <strong className="text-gold-300 font-mono">{fallbackMode.bookingReference}</strong>.
-                    Please complete payment of <strong>{selectedService.formattedPrice}</strong> on Razorpay, then enter your Payment ID below to verify and unlock WhatsApp confirmation.
+                  <p className="text-ivory-muted text-[11px] leading-relaxed">
+                    To trigger the instant Razorpay popup directly on your website, please add your <code className="text-gold-300 font-mono">RAZORPAY_KEY_ID</code> to your server configuration. Alternatively, confirm your appointment directly with Smita Singh on WhatsApp below:
                   </p>
                 </div>
               </div>
 
-              <div className="pt-1 space-y-2">
-                <Button
-                  href={`${fallbackMode.paymentLink}`}
-                  external
-                  variant="primary"
-                  size="sm"
-                  icon={ExternalLink}
-                  className="w-full text-xs font-bold"
-                >
-                  Pay Fixed {selectedService.formattedPrice} on Razorpay
-                </Button>
-
-                <div className="flex gap-2 items-center pt-2">
-                  <input
-                    type="text"
-                    value={manualPaymentId}
-                    onChange={(e) => setManualPaymentId(e.target.value)}
-                    placeholder="Enter Razorpay Payment ID (e.g. pay_XXXXX)"
-                    className="flex-1 px-3 py-2 rounded-xl bg-midnight-950 border border-white/15 focus:border-gold-500 text-ivory text-xs font-mono placeholder:text-ivory-muted/40"
-                  />
-                  <Button
-                    type="button"
-                    onClick={handleVerifyManualPayment}
-                    variant="secondary"
-                    size="sm"
-                    disabled={isProcessing}
-                    className="shrink-0 text-xs font-semibold"
-                  >
-                    {isProcessing ? "Verifying..." : "Verify & Unlock"}
-                  </Button>
-                </div>
-                <p className="text-[10px] text-ivory-muted text-center italic">
-                  WhatsApp redirection unlocks strictly after payment verification.
-                </p>
-              </div>
+              <Button
+                href={`https://wa.me/919119860551?text=${encodeURIComponent(
+                  `Namaste Smita Singh,\nI would like to book an appointment:\n• Service: ${selectedService.name}\n• Date: ${formatReadableDate(appointmentDate)}\n• Time: ${appointmentTime} IST\n• Client: ${clientName} (${clientPhone})\n• Fee: ${selectedService.formattedPrice}`
+                )}`}
+                external
+                variant="whatsapp"
+                size="sm"
+                icon={MessageCircle}
+                className="w-full text-xs font-bold shadow-gold-glow"
+              >
+                Confirm Appointment on WhatsApp Directly &rarr;
+              </Button>
             </div>
           )}
 
-          {/* Trust Safeguards */}
-          <div className="p-3 rounded-xl bg-midnight-950/60 border border-white/5 space-y-1.5 text-[11px] text-ivory-muted">
-            <div className="flex items-center gap-2 text-ivory-soft">
-              <Lock className="w-3.5 h-3.5 text-gold-400 shrink-0" />
-              <span>256-bit encrypted Razorpay payment processing</span>
-            </div>
-            <div className="flex items-center gap-2 text-ivory-soft">
-              <ShieldCheck className="w-3.5 h-3.5 text-gold-400 shrink-0" />
-              <span>Redirects to WhatsApp only after server-verified payment success</span>
-            </div>
-          </div>
-
           {/* Action Buttons */}
-          <div className="pt-2 border-t border-white/10 flex justify-between gap-3">
+          <div className="pt-3 border-t border-white/10 flex justify-between gap-3">
             <Button
               type="button"
               onClick={() => setStep(2)}
@@ -961,11 +825,11 @@ export default function AppointmentBookingModal({
               onClick={handleProceedToPayment}
               variant="primary"
               size="md"
-              icon={QrCode}
+              icon={CreditCard}
               disabled={isProcessing}
-              className="shadow-gold-glow font-bold"
+              className="shadow-gold-glow font-bold text-xs sm:text-sm px-6"
             >
-              {isProcessing ? "Processing..." : `Pay ${selectedService.formattedPrice} via Razorpay QR`}
+              {isProcessing ? "Opening Razorpay..." : `Pay ${selectedService.formattedPrice} via Razorpay`}
             </Button>
           </div>
         </div>
