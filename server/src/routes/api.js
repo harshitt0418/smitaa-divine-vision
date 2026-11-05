@@ -7,6 +7,7 @@ import {
   getCatalog,
   createOrder,
   verifyPayment,
+  getAvailableSlots,
 } from "../controllers/paymentController.js";
 import { isDbConnected } from "../config/db.js";
 
@@ -25,6 +26,7 @@ router.get("/health", (req, res) => {
 // Payments & Booking Endpoints
 router.get("/payments/config", getPaymentConfig);
 router.get("/payments/catalog", getCatalog);
+router.get("/payments/available-slots", getAvailableSlots);
 router.post("/payments/create-order", createOrder);
 router.post("/payments/verify-payment", verifyPayment);
 

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Calendar,
   Clock,
@@ -16,11 +16,16 @@ import {
   Lock,
   CreditCard,
   QrCode,
+  RotateCcw,
+  Wallet,
+  Landmark,
+  Check,
+  Loader2,
 } from "lucide-react";
 import Modal from "../ui/Modal";
 import Button from "../ui/Button";
 import { CONSULTATION_SERVICES, getConsultationById } from "../../data/services";
-import { createPaymentOrder, verifyPayment } from "../../services/api";
+import { createPaymentOrder, verifyPayment, getAvailableSlots } from "../../services/api";
 
 const TIME_SLOTS = [
   "01:00 PM",
@@ -101,17 +106,58 @@ export default function AppointmentBookingModal({
   const [clientEmail, setClientEmail] = useState("");
   const [clientNotes, setClientNotes] = useState("");
 
+  const [bookedSlots, setBookedSlots] = useState([]);
+  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState("idle"); // idle | processing | failed | cancelled | verified
+
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [fallbackMode, setFallbackMode] = useState(null);
   const [manualPaymentId, setManualPaymentId] = useState("");
   const [verifiedData, setVerifiedData] = useState(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (initialServiceId) {
       setSelectedServiceId(initialServiceId);
     }
   }, [initialServiceId]);
+
+  // Query dynamic availability whenever appointmentDate changes
+  useEffect(() => {
+    let isCurrent = true;
+    if (!appointmentDate || Boolean(dateError)) {
+      setBookedSlots([]);
+      return;
+    }
+
+    setIsLoadingSlots(true);
+    getAvailableSlots(appointmentDate)
+      .then((res) => {
+        if (!isCurrent) return;
+        const booked = Array.isArray(res?.bookedSlots) ? res.bookedSlots : [];
+        setBookedSlots(booked);
+
+        // If currently chosen time slot is booked, notify and clear it
+        if (appointmentTime && booked.includes(appointmentTime)) {
+          setAppointmentTime("");
+          setErrorMessage(
+            `The ${appointmentTime} slot on ${formatReadableDate(
+              appointmentDate
+            )} was already booked. Please choose another available time.`
+          );
+        }
+      })
+      .catch((err) => {
+        console.warn("Slot check error:", err);
+      })
+      .finally(() => {
+        if (isCurrent) setIsLoadingSlots(false);
+      });
+
+    return () => {
+      isCurrent = false;
+    };
+  }, [appointmentDate, dateError]);
 
   const selectedService = useMemo(() => {
     return getConsultationById(selectedServiceId);
@@ -150,8 +196,10 @@ export default function AppointmentBookingModal({
     setStep(1);
     setAppointmentDate("");
     setAppointmentTime("");
+    setBookedSlots([]);
     setDateError("");
     setErrorMessage("");
+    setPaymentStatus("idle");
     setFallbackMode(null);
     setManualPaymentId("");
     setVerifiedData(null);
@@ -193,6 +241,7 @@ export default function AppointmentBookingModal({
   const handleProceedToPayment = async () => {
     setIsProcessing(true);
     setErrorMessage("");
+    setPaymentStatus("processing");
 
     try {
       // 1. Create order on backend (strictly for the authoritative service price)
@@ -270,6 +319,10 @@ export default function AppointmentBookingModal({
           confirm_close: true,
           ondismiss: () => {
             setIsProcessing(false);
+            setPaymentStatus("cancelled");
+            setErrorMessage(
+              "Payment window was closed. Your selected service, date, time slot, and booking details are safely preserved. You can click 'Retry Payment' below to proceed."
+            );
           },
         },
         // 4. Verification callback: Server-side HMAC SHA-256 verification
@@ -284,13 +337,16 @@ export default function AppointmentBookingModal({
             });
 
             if (verifyResult.verified && verifyResult.success) {
+              setPaymentStatus("verified");
               setVerifiedData(verifyResult);
               setStep(4);
             } else {
+              setPaymentStatus("failed");
               setErrorMessage("Payment verification failed. Please contact Smita Singh with your payment reference.");
             }
           } catch (verifyErr) {
             console.error("Verification error:", verifyErr);
+            setPaymentStatus("failed");
             setErrorMessage(verifyErr.message || "Cryptographic payment verification failed on server.");
           } finally {
             setIsProcessing(false);
@@ -301,8 +357,10 @@ export default function AppointmentBookingModal({
       const razorpayInstance = new window.Razorpay(options);
       razorpayInstance.on("payment.failed", function (response) {
         console.error("Razorpay Payment Failed:", response.error);
+        setPaymentStatus("failed");
         setErrorMessage(
-          response.error.description || "Payment was not completed. Please try again."
+          (response.error && response.error.description) ||
+            "Payment was not completed. Your booking details and chosen slot are preserved. Please retry your payment."
         );
         setIsProcessing(false);
       });
@@ -310,6 +368,7 @@ export default function AppointmentBookingModal({
       razorpayInstance.open();
     } catch (err) {
       console.error("Payment flow error:", err);
+      setPaymentStatus("failed");
       setErrorMessage(err.message || "Failed to initiate payment. Please try again.");
       setIsProcessing(false);
     }
@@ -510,31 +569,58 @@ export default function AppointmentBookingModal({
 
           {/* Time Slot Selection (1:00 PM - 5:00 PM) */}
           <div className="space-y-2">
-            <label className="block text-xs font-medium text-ivory-soft">
-              Choose Preferred Time Slot (1:00 PM – 5:00 PM) *
-            </label>
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-medium text-ivory-soft">
+                Choose Preferred Time Slot (1:00 PM – 5:00 PM) *
+              </label>
+              {isLoadingSlots && (
+                <span className="text-[11px] text-gold-300/80 flex items-center gap-1">
+                  <Loader2 className="w-3 h-3 animate-spin" /> Checking slot availability...
+                </span>
+              )}
+            </div>
+
             <div className="grid grid-cols-3 gap-2">
               {TIME_SLOTS.map((slot) => {
                 const isSelected = appointmentTime === slot;
+                const isBooked = bookedSlots.includes(slot);
+
                 return (
                   <button
                     key={slot}
                     type="button"
+                    disabled={isBooked}
                     onClick={() => {
-                      setAppointmentTime(slot);
-                      setErrorMessage("");
+                      if (!isBooked) {
+                        setAppointmentTime(slot);
+                        setErrorMessage("");
+                      }
                     }}
-                    className={`py-2 px-2 rounded-xl text-xs font-medium border transition-all ${
-                      isSelected
+                    title={isBooked ? `${slot} is already booked` : `Select ${slot}`}
+                    className={`py-2 px-2 rounded-xl text-xs font-medium border transition-all text-center relative ${
+                      isBooked
+                        ? "bg-midnight-950/40 text-ivory-muted/30 border-white/5 cursor-not-allowed opacity-60 line-through"
+                        : isSelected
                         ? "bg-gold-500 text-midnight-950 border-gold-400 font-bold shadow-gold-glow scale-[1.02]"
                         : "bg-midnight-950/80 text-ivory-soft border-white/10 hover:border-gold-500/40 hover:bg-white/5"
                     }`}
                   >
-                    {slot}
+                    <span>{slot}</span>
+                    {isBooked && (
+                      <span className="block text-[9px] no-underline uppercase tracking-wide text-red-400 font-normal">
+                        Booked
+                      </span>
+                    )}
                   </button>
                 );
               })}
             </div>
+
+            {bookedSlots.length > 0 && (
+              <p className="text-[10px] text-ivory-muted pt-0.5">
+                Note: Greylisted slots marked <span className="text-red-400 font-semibold">Booked</span> are already reserved for confirmed appointments.
+              </p>
+            )}
           </div>
 
           {/* Action Buttons */}
@@ -738,6 +824,59 @@ export default function AppointmentBookingModal({
             </p>
           </div>
 
+          {/* Supported Payment Methods Breakdown */}
+          <div className="p-3.5 rounded-xl bg-midnight-950/70 border border-white/10 space-y-2">
+            <span className="text-[10px] uppercase font-cinzel font-bold tracking-wider text-ivory-muted block">
+              Supported Payment Methods (Razorpay Official Gateway)
+            </span>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] text-ivory-soft">
+              <div className="flex items-center gap-1.5 p-2 rounded-lg bg-white/5 border border-white/5">
+                <QrCode className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                <span>UPI & QR</span>
+              </div>
+              <div className="flex items-center gap-1.5 p-2 rounded-lg bg-white/5 border border-white/5">
+                <CreditCard className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                <span>Cards</span>
+              </div>
+              <div className="flex items-center gap-1.5 p-2 rounded-lg bg-white/5 border border-white/5">
+                <Landmark className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                <span>Net Banking</span>
+              </div>
+              <div className="flex items-center gap-1.5 p-2 rounded-lg bg-white/5 border border-white/5">
+                <Wallet className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                <span>Wallets</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Retry Callout if payment failed or was dismissed */}
+          {(paymentStatus === "cancelled" || paymentStatus === "failed") && (
+            <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-500/40 text-xs text-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-in fade-in">
+              <div className="flex items-start gap-2">
+                <RotateCcw className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-semibold text-amber-300 block">
+                    {paymentStatus === "cancelled" ? "Checkout Window Closed" : "Payment Incomplete"}
+                  </span>
+                  <p className="text-[11px] text-ivory-soft/90 mt-0.5">
+                    Your appointment slot ({formatReadableDate(appointmentDate)} at {appointmentTime}) and client details are safely retained. You can retry paying now without re-entering your information.
+                  </p>
+                </div>
+              </div>
+              <Button
+                type="button"
+                variant="primary"
+                size="sm"
+                icon={RotateCcw}
+                onClick={handleProceedToPayment}
+                disabled={isProcessing}
+                className="shrink-0 text-xs font-bold shadow-gold-glow"
+              >
+                Retry Payment
+              </Button>
+            </div>
+          )}
+
           {/* Fallback Notice if API keys are not yet configured on server */}
           {fallbackMode && (
             <div className="p-4 rounded-xl bg-gold-500/10 border border-gold-500/40 text-xs space-y-3">
@@ -884,6 +1023,36 @@ export default function AppointmentBookingModal({
               <span className="font-semibold text-ivory-light">
                 {verifiedData.booking.clientName}
               </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-ivory-muted">WhatsApp:</span>
+              <span className="font-semibold text-ivory-light">
+                {verifiedData.booking.clientPhone}
+              </span>
+            </div>
+            {verifiedData.booking.clientEmail && (
+              <div className="flex justify-between items-center">
+                <span className="text-ivory-muted">Email:</span>
+                <span className="text-ivory-soft">
+                  {verifiedData.booking.clientEmail}
+                </span>
+              </div>
+            )}
+            <div className="flex justify-between items-center pt-2 border-t border-white/10">
+              <span className="text-ivory-muted">Amount Paid:</span>
+              <span className="font-bold text-gold-400 font-cinzel text-sm">
+                ₹{verifiedData.booking.amount?.toLocaleString("en-IN")}
+              </span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-ivory-muted">Payment Status:</span>
+              <span className="text-emerald-400 font-bold uppercase text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30">
+                Verified & Confirmed
+              </span>
+            </div>
+            <div className="pt-2 border-t border-white/10 flex items-center gap-1.5 text-[11px] text-emerald-400">
+              <Check className="w-3.5 h-3.5 shrink-0" />
+              <span>Owner notified via configured dispatch channels.</span>
             </div>
           </div>
 

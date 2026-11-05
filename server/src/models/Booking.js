@@ -49,9 +49,11 @@ const bookingSchema = new mongoose.Schema(
     },
     appointmentDate: {
       type: String, // YYYY-MM-DD
+      index: true,
     },
     appointmentTime: {
       type: String, // e.g. "02:00 PM"
+      index: true,
     },
     notes: {
       type: String,
@@ -78,10 +80,27 @@ const bookingSchema = new mongoose.Schema(
     paidAt: {
       type: Date,
     },
+    ownerNotified: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
+    ownerNotifiedAt: {
+      type: Date,
+    },
+    notificationChannel: {
+      type: String,
+    },
+    notificationError: {
+      type: String,
+    },
   },
   {
     timestamps: true,
   }
 );
+
+// Compound index to quickly query booked slots for availability management
+bookingSchema.index({ appointmentDate: 1, appointmentTime: 1, status: 1 });
 
 export const Booking = mongoose.model("Booking", bookingSchema);

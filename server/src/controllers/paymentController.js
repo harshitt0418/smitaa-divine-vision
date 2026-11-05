@@ -8,12 +8,25 @@ import {
   findServiceOrClass,
   validateAppointmentSchedule,
 } from "../config/servicesCatalog.js";
+import { notifyOwnerOfBooking } from "../services/notificationService.js";
 
 // Resilient memory cache for serverless / offline MongoDB fallback
-const memoryBookings = new Map();
+export const memoryBookings = new Map();
 
 const DEFAULT_WHATSAPP = "919119860551";
 const DEFAULT_PAYMENT_LINK = "https://razorpay.me/@diivinevision";
+
+export const ALL_TIME_SLOTS = [
+  "01:00 PM",
+  "01:30 PM",
+  "02:00 PM",
+  "02:30 PM",
+  "03:00 PM",
+  "03:30 PM",
+  "04:00 PM",
+  "04:30 PM",
+  "05:00 PM",
+];
 
 /**
  * Public payment configuration
@@ -30,6 +43,7 @@ export function getPaymentConfig(req, res) {
     whatsappNumber: process.env.WHATSAPP_BUSINESS_NUMBER || DEFAULT_WHATSAPP,
     isConfigured,
     currency: "INR",
+    supportedMethods: ["UPI", "Cards (Visa, MasterCard, RuPay)", "Net Banking", "Wallets"],
   });
 }
 
@@ -44,8 +58,93 @@ export function getCatalog(req, res) {
 }
 
 /**
+ * Get Available Time Slots for a given date
+ * Enforces Monday–Friday, 1:00 PM – 5:00 PM, and filters out already booked slots
+ */
+export async function getAvailableSlots(req, res) {
+  try {
+    const { date } = req.query;
+
+    if (!date) {
+      return res.status(400).json({ error: "Date parameter is required (YYYY-MM-DD)." });
+    }
+
+    // Validate date format and weekday
+    const dateParts = date.split("-");
+    if (dateParts.length !== 3) {
+      return res.status(400).json({ error: "Invalid date format. Expected YYYY-MM-DD." });
+    }
+
+    const year = parseInt(dateParts[0], 10);
+    const month = parseInt(dateParts[1], 10) - 1;
+    const day = parseInt(dateParts[2], 10);
+
+    const targetDate = new Date(year, month, day, 12, 0, 0);
+    if (isNaN(targetDate.getTime())) {
+      return res.status(400).json({ error: "Invalid appointment date selected." });
+    }
+
+    const dayOfWeek = targetDate.getDay();
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+      return res.status(400).json({
+        error: "Appointments are only available Monday through Friday. Weekends are closed.",
+        isWeekend: true,
+      });
+    }
+
+    // Prevent past dates
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const checkDate = new Date(year, month, day, 0, 0, 0);
+    if (checkDate < today) {
+      return res.status(400).json({
+        error: "Appointment date cannot be in the past.",
+        isPast: true,
+      });
+    }
+
+    // Query booked slots from MongoDB or memory cache
+    let bookedBookings = [];
+    if (isDbConnected()) {
+      try {
+        bookedBookings = await Booking.find({
+          appointmentDate: date,
+          status: "PAID",
+        }).select("appointmentTime");
+      } catch (dbErr) {
+        console.warn("[MongoDB Slot Query Error] Falling back to memory cache:", dbErr.message);
+      }
+    }
+
+    const bookedTimes = new Set(
+      bookedBookings.map((b) => b.appointmentTime).filter(Boolean)
+    );
+
+    // Merge memoryBookings if any are present
+    for (const b of memoryBookings.values()) {
+      if (b.appointmentDate === date && b.status === "PAID" && b.appointmentTime) {
+        bookedTimes.add(b.appointmentTime);
+      }
+    }
+
+    const bookedSlots = Array.from(bookedTimes);
+    const availableSlots = ALL_TIME_SLOTS.filter((slot) => !bookedTimes.has(slot));
+
+    return res.status(200).json({
+      date,
+      allSlots: ALL_TIME_SLOTS,
+      bookedSlots,
+      availableSlots,
+    });
+  } catch (error) {
+    console.error("[Get Available Slots Error]", error);
+    return res.status(500).json({ error: "Failed to fetch appointment availability." });
+  }
+}
+
+/**
  * Create a Razorpay Order and Booking Record
- * Server-side validation of schedule (Mon-Fri, 1-5 PM), prices, and client details
+ * Server-side validation of schedule (Mon-Fri, 1-5 PM), prices, duplicate slots, and client details
  */
 export async function createOrder(req, res) {
   try {
@@ -60,17 +159,17 @@ export async function createOrder(req, res) {
     } = req.body;
 
     if (!clientName || !clientName.trim()) {
-      return res.status(400).json({ error: "Client name is required." });
+      return res.status(400).json({ error: "Customer name is required." });
     }
 
     if (!clientPhone || !clientPhone.trim()) {
-      return res.status(400).json({ error: "WhatsApp / phone number is required." });
+      return res.status(400).json({ error: "Mobile number is required." });
     }
 
     const service = findServiceOrClass(serviceId);
     if (!service) {
       return res.status(400).json({
-        error: "Invalid service or class selection. Please choose from our official offerings.",
+        error: "Invalid service selection. Please choose from our official offerings.",
       });
     }
 
@@ -79,6 +178,39 @@ export async function createOrder(req, res) {
       const scheduleValidation = validateAppointmentSchedule(appointmentDate, appointmentTime);
       if (!scheduleValidation.valid) {
         return res.status(400).json({ error: scheduleValidation.error });
+      }
+
+      // Duplicate booking prevention: check if this exact slot is already booked and paid
+      let existingBooking = null;
+      if (isDbConnected()) {
+        try {
+          existingBooking = await Booking.findOne({
+            appointmentDate,
+            appointmentTime,
+            status: "PAID",
+          });
+        } catch (dbErr) {
+          console.warn("[MongoDB Duplicate Check Error]", dbErr.message);
+        }
+      }
+
+      if (!existingBooking) {
+        for (const b of memoryBookings.values()) {
+          if (
+            b.appointmentDate === appointmentDate &&
+            b.appointmentTime === appointmentTime &&
+            b.status === "PAID"
+          ) {
+            existingBooking = b;
+            break;
+          }
+        }
+      }
+
+      if (existingBooking) {
+        return res.status(409).json({
+          error: `The appointment slot on ${appointmentDate} at ${appointmentTime} has already been reserved. Please choose another available slot.`,
+        });
       }
     }
 
@@ -109,6 +241,7 @@ export async function createOrder(req, res) {
             serviceType: service.serviceType,
             clientName: clientName.trim(),
             clientPhone: clientPhone.trim(),
+            clientEmail: (clientEmail || "").trim(),
             appointmentDate: appointmentDate || "N/A (Recorded Class)",
             appointmentTime: appointmentTime || "N/A",
           },
@@ -139,6 +272,7 @@ export async function createOrder(req, res) {
       notes: (notes || "").trim(),
       status: "PENDING",
       razorpayOrderId,
+      ownerNotified: false,
     };
 
     // Save in DB if connected
@@ -166,6 +300,7 @@ export async function createOrder(req, res) {
         currency: "INR",
         keyId,
         bookingReference,
+        serviceName: service.name,
         service: {
           id: service.id,
           name: service.name,
@@ -188,6 +323,7 @@ export async function createOrder(req, res) {
       mode: "manual_link_fallback",
       keyMissing: true,
       bookingReference,
+      serviceName: service.name,
       paymentLink: process.env.RAZORPAY_PAYMENT_LINK || DEFAULT_PAYMENT_LINK,
       amount: service.price,
       currency: "INR",
@@ -200,6 +336,7 @@ export async function createOrder(req, res) {
       client: {
         name: clientName.trim(),
         phone: clientPhone.trim(),
+        email: (clientEmail || "").trim(),
       },
       appointmentDate: appointmentDate || null,
       appointmentTime: appointmentTime || null,
@@ -214,7 +351,7 @@ export async function createOrder(req, res) {
 
 /**
  * Verify Razorpay payment signature or captured payment
- * Only after verification is successful, generate the verified WhatsApp redirection
+ * Strictly verifies server-side, updates status to PAID, and notifies the website owner
  */
 export async function verifyPayment(req, res) {
   try {
@@ -241,6 +378,68 @@ export async function verifyPayment(req, res) {
         success: false,
         verified: false,
         error: "Server payment configuration missing. Cannot cryptographically verify payment without RAZORPAY_KEY_SECRET.",
+      });
+    }
+
+    // Find the booking first to check idempotency
+    let booking = null;
+
+    if (isDbConnected()) {
+      try {
+        booking = await Booking.findOne({
+          $or: [
+            { razorpayOrderId: razorpay_order_id },
+            { reference: bookingReference },
+          ],
+        });
+      } catch (dbErr) {
+        console.warn("[MongoDB Lookup Error]", dbErr.message);
+      }
+    }
+
+    if (!booking) {
+      booking =
+        memoryBookings.get(razorpay_order_id) ||
+        memoryBookings.get(bookingReference);
+    }
+
+    // Idempotency: If this booking is already marked PAID, return existing verified response without duplicating notifications
+    if (booking && booking.status === "PAID") {
+      const clientName = booking.clientName;
+      const serviceName = booking.serviceName;
+      const amount = booking.amount;
+      const appointmentDate = booking.appointmentDate;
+      const appointmentTime = booking.appointmentTime;
+      const refCode = booking.reference;
+      const serviceType = booking.serviceType;
+
+      const whatsappText = [
+        "Namaste Smita Singh,",
+        `I have booked and confirmed payment for my consultation:`,
+        `• Customer Name: ${clientName}`,
+        `• Mobile: ${booking.clientPhone}`,
+        `• Service: ${serviceName}${amount ? ` (₹${amount.toLocaleString("en-IN")})` : ""}`,
+        `• Appointment: ${appointmentDate || "Selected weekday"}, ${appointmentTime || "1:00 PM - 5:00 PM"}`,
+        `• Payment ID: ${booking.razorpayPaymentId || razorpay_payment_id}`,
+        `• Order Ref: ${refCode}`,
+        "",
+        "Looking forward to our session. Please confirm my appointment.",
+      ].join("\n");
+
+      const whatsappNumber = process.env.WHATSAPP_BUSINESS_NUMBER || DEFAULT_WHATSAPP;
+      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappText)}`;
+
+      return res.status(200).json({
+        success: true,
+        verified: true,
+        alreadyVerified: true,
+        message: "Payment was previously verified.",
+        paymentId: booking.razorpayPaymentId || razorpay_payment_id,
+        orderId: booking.razorpayOrderId || razorpay_order_id || null,
+        bookingReference: refCode,
+        booking,
+        whatsappUrl,
+        whatsappText,
       });
     }
 
@@ -302,28 +501,6 @@ export async function verifyPayment(req, res) {
       });
     }
 
-    // Payment is verified! Find and update the booking
-    let booking = null;
-
-    if (isDbConnected()) {
-      try {
-        booking = await Booking.findOne({
-          $or: [
-            { razorpayOrderId: razorpay_order_id },
-            { reference: bookingReference },
-          ],
-        });
-      } catch (dbErr) {
-        console.warn("[MongoDB Lookup Error]", dbErr.message);
-      }
-    }
-
-    if (!booking) {
-      booking =
-        memoryBookings.get(razorpay_order_id) ||
-        memoryBookings.get(bookingReference);
-    }
-
     const paidAt = new Date();
 
     if (booking && booking.save) {
@@ -342,20 +519,63 @@ export async function verifyPayment(req, res) {
     }
 
     const clientName = booking ? booking.clientName : "Valued Client";
+    const clientPhone = booking ? booking.clientPhone : "";
+    const clientEmail = booking ? booking.clientEmail : "";
     const serviceName = booking ? booking.serviceName : "Consultation / Class";
     const amount = booking ? booking.amount : "";
     const appointmentDate = booking ? booking.appointmentDate : null;
     const appointmentTime = booking ? booking.appointmentTime : null;
     const refCode = booking ? booking.reference : bookingReference || razorpay_order_id || razorpay_payment_id;
     const serviceType = booking ? booking.serviceType : "consultation";
+    const notes = booking ? booking.notes : "";
 
-    // Build prefilled WhatsApp message
+    // =========================================================================
+    // OWNER NOTIFICATION: Send email/webhook notification strictly after payment
+    // =========================================================================
+    const notificationPayload = {
+      clientName,
+      clientPhone,
+      clientEmail,
+      serviceName,
+      serviceType,
+      appointmentDate,
+      appointmentTime,
+      amount,
+      currency: "INR",
+      status: "PAID",
+      reference: refCode,
+      razorpayPaymentId,
+      razorpayOrderId: razorpay_order_id || null,
+      notes,
+      paidAt,
+      ownerNotified: booking ? booking.ownerNotified : false,
+    };
+
+    const notificationResult = await notifyOwnerOfBooking(notificationPayload);
+
+    // Update notification status on booking
+    if (booking && booking.save) {
+      booking.ownerNotified = true;
+      booking.ownerNotifiedAt = new Date();
+      booking.notificationChannel = notificationResult.emailSent
+        ? "email"
+        : notificationResult.webhookSent
+        ? "webhook"
+        : "mock_logged";
+      await booking.save();
+    } else if (booking) {
+      booking.ownerNotified = true;
+      booking.ownerNotifiedAt = new Date();
+    }
+
+    // Build prefilled WhatsApp message for customer redirect
     let whatsappText = "";
     if (serviceType === "recorded-class") {
       whatsappText = [
         "Namaste Smita Singh,",
         `I have enrolled and confirmed payment for the online recorded class:`,
-        `• Name: ${clientName}`,
+        `• Customer Name: ${clientName}`,
+        `• Mobile: ${clientPhone}`,
         `• Class: ${serviceName}${amount ? ` (₹${amount.toLocaleString("en-IN")})` : ""}`,
         `• Payment ID: ${razorpay_payment_id}`,
         `• Order Ref: ${refCode}`,
@@ -366,7 +586,8 @@ export async function verifyPayment(req, res) {
       whatsappText = [
         "Namaste Smita Singh,",
         `I have booked and confirmed payment for my consultation:`,
-        `• Name: ${clientName}`,
+        `• Customer Name: ${clientName}`,
+        `• Mobile: ${clientPhone}`,
         `• Service: ${serviceName}${amount ? ` (₹${amount.toLocaleString("en-IN")})` : ""}`,
         `• Appointment: ${appointmentDate || "Selected weekday"}, ${appointmentTime || "1:00 PM - 5:00 PM"}`,
         `• Payment ID: ${razorpay_payment_id}`,
@@ -382,12 +603,14 @@ export async function verifyPayment(req, res) {
     return res.status(200).json({
       success: true,
       verified: true,
-      message: "Payment successfully verified.",
+      message: "Payment successfully verified and appointment confirmed.",
       paymentId: razorpay_payment_id,
       orderId: razorpay_order_id || null,
       bookingReference: refCode,
       booking: {
         clientName,
+        clientPhone,
+        clientEmail,
         serviceName,
         amount,
         appointmentDate,
@@ -395,6 +618,7 @@ export async function verifyPayment(req, res) {
         serviceType,
         status: "PAID",
         paidAt,
+        ownerNotified: true,
       },
       whatsappUrl,
       whatsappText,

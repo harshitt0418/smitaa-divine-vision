@@ -122,6 +122,41 @@ export async function verifyPayment(verifyPayload) {
 }
 
 /**
+ * Fetch available time slots for a given appointment date
+ */
+export async function getAvailableSlots(date) {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/payments/available-slots?date=${encodeURIComponent(date)}`
+    );
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData.error || `HTTP error ${response.status}`);
+    }
+    return await response.json();
+  } catch (err) {
+    console.warn("Could not query dynamic slots from backend:", err.message);
+    return {
+      success: true,
+      date,
+      bookedSlots: [],
+      availableSlots: [
+        "01:00 PM",
+        "01:30 PM",
+        "02:00 PM",
+        "02:30 PM",
+        "03:00 PM",
+        "03:30 PM",
+        "04:00 PM",
+        "04:30 PM",
+        "05:00 PM",
+      ],
+      fallback: true,
+    };
+  }
+}
+
+/**
  * Check backend status
  */
 export async function checkBackendStatus() {
